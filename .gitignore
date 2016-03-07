@@ -1,0 +1,6 @@
+.settings
+.buildpath
+.project
+composer.json
+Application/Runtime/*
+/Application/Common/Conf/config.php
