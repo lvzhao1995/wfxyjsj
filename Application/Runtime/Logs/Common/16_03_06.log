@@ -1,0 +1,6 @@
+[ 2016-03-06T08:58:26+08:00 ] 127.0.0.1 /tp-wfxyjsj/index.php/View
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000034s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000429s ]
+ERR: 无法加载模块:View
+

@@ -1,0 +1,20 @@
+[ 2016-03-07T20:40:16+08:00 ] 127.0.0.1 /tp-wfxyjsj/index.php/home
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000012s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000470s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000981s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001060s ]
+INFO: [ view_parse ] --START--
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.046370s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.046447s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000532s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000600s ]
+SQL: SHOW COLUMNS FROM `jwc` [ RunTime:0.0304s ]
+SQL: SELECT * FROM `jwc` WHERE `studentid` = '13021140047' LIMIT 1   [ RunTime:0.0012s ]
+SQL: UPDATE `jwc` SET `studentid`='1233',`password`='456' WHERE `openid` = '789' [ RunTime:0.0650s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.002014s ]
+INFO: [ app_end ] --END-- [ RunTime:0.002137s ]
+

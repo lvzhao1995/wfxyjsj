@@ -1,0 +1,1 @@
+a:6:{i:0;s:6:"openid";i:1;s:9:"studentid";i:2;s:8:"password";i:3;s:12:"kecheng_json";s:3:"_pk";s:6:"openid";s:5:"_type";a:4:{s:6:"openid";s:12:"varchar(200)";s:9:"studentid";s:11:"varchar(11)";s:8:"password";s:12:"varchar(200)";s:12:"kecheng_json";s:13:"varchar(8000)";}}
