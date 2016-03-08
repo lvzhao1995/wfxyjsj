@@ -2,5 +2,5 @@
 .buildpath
 .project
 composer.json
-Application/Runtime/
+/Application/Runtime/
 /Application/Common/Conf/config.php
