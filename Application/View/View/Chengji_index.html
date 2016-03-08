@@ -1,1 +1,70 @@
-<extend name="Public/base">
+<extend name="Public/base" /> <block name="content">
+<section class="am-container">
+  <present name="nobind">
+      <h3>您尚未绑定！<a href="{$bindurl}">点击绑定</a></h3>
+  <else />
+  <form class="am-form am-form-inline" method="post">
+    <div class="am-form-group">
+      <select id="xn">
+        <option value="" selected>请选择学年</option>
+        <for start="$nj" end="$nian">
+          <option value="{$i}-{$i+1}">{$i}-{$i+1}</option>
+        </for>
+      </select>
+    </div>
+    <div class="am-form-group">
+      <select id="xq">
+        <option value="" selected>请选择学期</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+      </select>
+    </div>
+    <input type="submit" class="am-btn am-btn-default" value="查询">
+  </form>
+  <br>
+  <div id="content"></div>
+  </present>
+</section>
+</block> <block name="javascript"> <script>
+	$(function() {
+		$('form').submit(function() {
+			if ($('#xn').val() == '' || $('#xq').val() == '') {
+				alert('请先选择学年或学期');
+			} else {
+				$.AMUI.progress.start();
+				$.post('{$url}',{
+					'xn' : $('#xn').val(),
+					'xq' : $('#xq').val(),
+					'openid' : '{$openid}'
+				},function(msg) {
+					var data;
+					var html;
+					$.AMUI.progress.done();
+					if(msg.status==404){
+						$('#content').html('<h3>非常抱歉，我们暂时无法访问学校服务器！请稍后再试</h3>');
+					}else if(msg.status==403){
+						$('#content').html('<h3>您尚未绑定！<a href="{$bindurl}">点击绑定</a></h3>');
+					}else if(msg.status==401){
+						$('#content').html('<h3>成绩暂未公布，请耐心等待</h3>');
+					}else if(msg.status==0){
+						html='<p>'+msg.xn+'学年第'+msg.xq+'学期的成绩如下：</p>';
+						html+='<table class="am-table am-table-striped" id="chengji"><thead><tr><th>科目</th><th>卷面成绩</th><th>最终成绩</th></tr>';
+						html+='</thead><tbody>';
+						msg.data.forEach(function(tmp){
+							html+='<tr><td>'+tmp.kemu+'</td><td>'+tmp.juanmian+'</td><td>'+tmp.chengji
+							if(parseInt(tmp.chengji) >= 60||tmp.chengji == "中等" || tmp.chengji == "优秀" || tmp.chengji == "良好"	|| tmp.chengji == "及格"){
+								html+=' <span class="am-badge am-badge-success">通过</span>';
+							}else{
+								html+=' <span class="am-badge am-badge-warning">未通过</span>';
+							}
+							html+='</td></tr>';
+						});
+						html+='</tbody></table>';
+						$('#content').html(html);
+					}
+				});
+			}
+			return false;
+		});
+	});
+</script> </block>
