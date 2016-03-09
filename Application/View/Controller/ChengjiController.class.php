@@ -12,7 +12,7 @@ class ChengjiController extends Controller
         if ($openid == '') {
             $this->error('请在微信中点击自动回复的链接打开本页面！');
         }
-        $jwc = A('Home/jwc');
+        $jwc = A('Home/Jwc');
         $rs = $jwc->isBind($openid);
         if ($rs === false) {
             $this->nobind = '';

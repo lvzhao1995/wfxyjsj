@@ -1,7 +1,8 @@
 <?php
 namespace Home\Controller;
 
-use Think\Controller;
+use Think\Controller; 
+use Wechat;
 
 class IndexController extends Controller
 {
@@ -81,7 +82,7 @@ class IndexController extends Controller
         
         if (! empty($postStr)) {
             if ($this->encrypt_type == 'aes') {
-                $crypt = new WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
+                $crypt = new Wechat\WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
                 $postData = '';
                 $crypt->decryptMsg(I('get.msg_signature'), $this->timestamp, $this->nonce, $postStr, $postData);
                 $postStr = $postData;
@@ -214,7 +215,7 @@ class IndexController extends Controller
                 $this->receiveText('subscribe');
                 break;
             case 'unsubscribe':
-                $this->unsubscribeEvent();
+                $this->unSubscribe();
                 break;
             case 'CLICK':
                 $this->receiveText($object->EventKey);
@@ -223,18 +224,13 @@ class IndexController extends Controller
         }
     }
 
-    private function unsubscribeEvent()
+    private function unSubscribe()
     {
-        $classname = '';
-        include __DIR__ . '/dbconfig.php';
-        $stmt = $mysqli->prepare('select `classname` from `app` where `unsubscribe`=1');
-        $stmt->execute();
-        $stmt->bind_result($classname);
-        while ($stmt->fetch()) {
-            $this->runApp($classname, 'unsubscribe');
+        $table=M('app');
+        $data=$table->field('classname')->where('`unsubscribe`=1')->select();
+        foreach ($data as $v){
+            $this->runApp($v['classname'], 'unsubscribe');
         }
-        $stmt->close();
-        $mysqli->close();
     }
 
     private function respondText($contentStr)
@@ -250,8 +246,7 @@ class IndexController extends Controller
                     <Content><![CDATA[' . $contentStr . ']]></Content>
                     </xml>';
         if ($this->encrypt_type == 'aes') {
-            include_once __DIR__ . '/class/wxBizMsgCrypt.php';
-            $encrypt = new WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
+            $encrypt = new Wechat\WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
             $encryptMsg = '';
             $encrypt->encryptMsg($resultStr, $this->timestamp, $this->nonce, $encryptMsg);
             echo $encryptMsg;
@@ -292,8 +287,7 @@ class IndexController extends Controller
         $resultStr .= '</Articles>
             </xml>';
         if ($this->encrypt_type == 'aes') {
-            include_once __DIR__ . '/class/wxBizMsgCrypt.php';
-            $encrypt = new WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
+            $encrypt = new Wechat\WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
             $encryptMsg = '';
             $encrypt->encryptMsg($resultStr, $this->timestamp, $this->nonce, $encryptMsg);
             echo $encryptMsg;
@@ -340,13 +334,12 @@ class IndexController extends Controller
 
     private function runApp($classname, $key)
     {
-        include __DIR__ . '/class/' . $classname . '/index.php';
-        $app = eval('return new ' . $classname . ';');
+        $app=A($classname);
         $res = $app->setKey($key, $this->username);
         $this->respondMsg($res);
     }
 
-    private function forward($keyword, $url, $token, $tj = false)
+    private function forward($keyword, $url, $token, $robot = false)
     {
         $time = time();
         $text = '<xml>
@@ -379,19 +372,23 @@ class IndexController extends Controller
         $flag = 0;
         while (curl_errno($ch) != 0 && $flag < 4) {
             $data = curl_exec($ch);
-            echo curl_error($ch);
             $flag ++;
         }
         if (curl_errno($ch) != 0) {
             echo '';
-        } elseif ($tj) {
+        } elseif ($robot) {
             $resText = simplexml_load_string($data, 'SimpleXMLElement', LIBXML_NOCDATA);
             if ($resText->MsgType == 'text') {
-                $this->respondText($resText->Content . "\n\n本消息为自动回复，可发送消息继续聊天。\n有问题请等待人工回复或<a href='http://sighttp.qq.com/authd?IDKEY=0c6214d0db3daaace325de4a71b9216ada134d37be10c7bc'>点击进行qq咨询</a>");
+                $qq=M('manage');
+                $data=$qq->field('qq')->find();
+                $res=$resText->Content . "\n\n本消息为自动回复，可发送消息继续聊天。\n有问题请等待人工回复";
+                if(!empty($data)){
+                    $res.="或<a href='{$data['qq']}'>点击进行qq咨询</a>";
+                }
+                $this->respondText($res);
             } else {
                 if ($this->encrypt_type == 'aes') {
-                    include_once __DIR__ . '/class/wxBizMsgCrypt.php';
-                    $encrypt = new WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
+                    $encrypt = new Wechat\WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
                     $encryptMsg = '';
                     $encrypt->encryptMsg($data, $this->timestamp, $this->nonce, $encryptMsg);
                     echo $encryptMsg;
@@ -402,7 +399,7 @@ class IndexController extends Controller
         } else {
             if ($this->encrypt_type == 'aes') {
                 include_once __DIR__ . '/class/wxBizMsgCrypt.php';
-                $encrypt = new WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
+                $encrypt = new Wechat\WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
                 $encryptMsg = '';
                 $encrypt->encryptMsg($data, $this->timestamp, $this->nonce, $encryptMsg);
                 echo $encryptMsg;
@@ -410,6 +407,5 @@ class IndexController extends Controller
                 echo $data;
             }
         }
-        curl_close($ch);
     }
 }
