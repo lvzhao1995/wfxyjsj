@@ -1,0 +1,99 @@
+<extend name="Public/base" />
+<block name="content">
+<section class="am-container">
+<switch name="status">
+<case value="404"><h3>服务器繁忙，请稍后再试！<h3></case>
+<case value="401"><h3>您尚未绑定！<a href="{$bindurl}">点击绑定</a></h3></case>
+<default />
+  <form name="form1" action="{$submitUrl}" method="post">
+    <foreach name="$res.match.0" item="v"> <if condition="!stripos($v,'checkbox')">
+    {$v} </if> </foreach>
+    <table class="am-table am-table-striped" id='DBGrid'>
+      <thead>
+        <tr>
+          <td>选定</td>
+          <td>名称</td>
+          <td>报名</td>
+        </tr>
+      </thead>
+      {$res.list}
+    </table>
+    <input type="hidden" name="cookie" value="{$cookie}" /> 
+    <input type="hidden" name="number" value="{$number}" /> 
+    <img src="{$imgUrl}" width="104px"></img>
+    <div class="am-form-group" id="sfzh">
+      <label for="txtSFZH">身份证号</label>
+    </div>
+  </form>
+  <br>
+  <empty name="$res.yi">
+  <div class="am-scrollable-horizontal">
+    <div class="am-text-center">已报名项目</div>
+    <table class="am-table am-table-striped am-text-nowrap">
+      <thead>
+        <tr>
+          <td>序号</td>
+          <td>名称</td>
+          <td>身份证号</td>
+          <td>原准考证号</td>
+          <td>保留成绩分数</td>
+          <td>删除</td>
+        </tr>
+      </thead>
+      {$res.yi}
+    </table>
+  </div>
+  </empty>
+  </switch>
+</section>
+</block>
+<block name="javascript">
+<script>
+  $(function(){
+    $("input").hide();
+    var sfzh=$("#txtSFZH");
+    var sub=$("#btnSubmit");
+    sfzh.attr("class","am-form-field");
+    sub.attr("class","am-btn am-btn-default");
+    $("#sfzh").append(sfzh.clone().show());
+    $("#sfzh").after(sub.clone().show());
+    $("#txtSFZH").remove();
+    $("#btnSubmit").remove();
+    $("#txtSFZH").val("{$res.sfz}");
+    $("input[type=checkbox]").show();
+    $("#File1").hide();
+    $("#sfzh").after('<div class="am-form-group" id="blcj"></div>');
+  });
+
+  function chkSelect_click(obj,n,data){
+    data="#"+data;
+    for(i = 1;i<$(data+" tr").length;i++){
+      if($(data+" tr:eq("+i+")").find("input")[n] != obj){
+          $(data+" tr:eq("+i+") input")[n].checked = false;
+          $(data+" tr:eq("+i+")").find("div").hide();
+      }
+    }
+    $("#blcj").html("");
+  }
+  
+  function __showzkzh(eventTarget, eventArgument) {
+    var name=eventTarget.split("$");
+    name.splice(name.length-1,1);
+    $("#blcj").append("<label for='yzkzh'>原准考证号</label><input type='text' name='"+name.join(':')+":txtyzkzh' id='yzkzh'>");
+    $("#blcj").append("<label for='blcjfs'>保留成绩分数</label><input type='text' name='"+name.join(':')+":txtBlcjfs' id='blcjfs'>");
+  }
+  function __doPostBack(eventTarget, eventArgument) {
+    var theform;
+    if (window.navigator.appName.toLowerCase().indexOf("microsoft") > -1) {
+      theform = document.form1;
+    }
+    else {
+      theform = document.forms["form1"];
+    }
+    theform.__EVENTTARGET.value = eventTarget.split("$").join(":");
+    theform.__EVENTARGUMENT.value = eventArgument;
+    theform.submit();
+  }
+  
+  </script>
+</block>
