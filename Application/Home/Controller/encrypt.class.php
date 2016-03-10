@@ -1,10 +1,6 @@
 <?php
 namespace Home\Controller;
 class do_encrypt{
-    private $key;
-    function do_encrypt(){
-        $this->key=C('ENCRYPT_KEY');
-    }
     function encrypt($txt, $key = null)
     {
         if(empty($key)){

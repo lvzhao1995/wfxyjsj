@@ -47,34 +47,37 @@ class InfoController extends Controller
         $cookie = substr($matches[1][2], 1);
         return $cookie;
     }
-    // @todo
-    /*
-     * function bind($openid, $number, $password)
-     * {
-     * $flag = $this->login($number, $password);
-     * if ($flag == 404) {
-     * return 404;
-     * } elseif ($flag) {
-     * $db=M('Info');
-     * $user=$db->where('openid=:openid')->bind(':openid',$openid)->find();
-     * if (!empty($user)) {
-     * $db->where('openid=:openid')->bind(':openid',$openid)->delete();
-     * }
-     * $db=D('Info');
-     *
-     * $db->create($data);
-     * $stmt = $mysqli->prepare('insert into `info` (`openid`,`studentid`,`password`) values (?,?,?)');
-     * $stmt->bind_param('sss', $openid, $number, $password);
-     * if ($stmt->execute()) {
-     * return 'cg';
-     * } else {
-     * return 'cuowu';
-     * }
-     * } else {
-     * return false;
-     * }
-     * }
-     */
+
+    function bind($openid, $number, $password)
+    {
+        $flag = $this->login($number, $password);
+        if ($flag == 404) {
+            return 404;
+        } elseif ($flag != 400) {
+            $db = M('Info');
+            $db->where('openid=:openid')
+                ->bind(':openid', $openid)
+                ->delete();
+            $encrypt = new do_encrypt();
+            $data = array(
+                'studentid' => $number,
+                'password' => $encrypt->encrypt($password)
+            );
+            
+            if ($db->create($data)) {
+                if ($db->add()) {
+                    return 0;
+                } else {
+                    return 402;
+                }
+            } else {
+                return 403;
+            }
+        } else {
+            return 400;
+        }
+    }
+
     private function login($number, $password)
     {
         $url = $this->url . 'userPasswordValidate.portal';
@@ -91,7 +94,7 @@ class InfoController extends Controller
         $matches = array();
         preg_match_all('/handleLogin([^\(]*)\(/', $data[0], $matches);
         if (substr($matches[1][0], 0) == 'Failure') {
-            return 403;
+            return 400;
         } else {
             preg_match_all('/Set\-Cookie:([^;]*);/', $data[0], $matches);
             $cookie = substr($matches[1][0], 1);
@@ -160,7 +163,7 @@ class InfoController extends Controller
     public function getJwcCookie($openid)
     {
         $cookie = $this->isBind($openid);
-        if ($cookie && $cookie != 404) {
+        if ($cookie!=403 && $cookie != 404) {
             $data = $this->visitUrl(C('JWC_URL') . 'default_zzjk.aspx', $cookie);
             preg_match_all('/Set\-Cookie:([^;]*);/', $data[0], $matches);
             $cookie = substr($matches[1][0], 1);
@@ -171,7 +174,7 @@ class InfoController extends Controller
     public function getLibCookie($openid)
     {
         $cookie = $this->isBind($openid);
-        if ($cookie && $cookie != 404) {
+        if ($cookie!=403 && $cookie != 404) {
             $data = $this->visitUrl(C('LIB_URL') . 'reader/hwthau.php', $cookie);
             preg_match_all('/Set\-Cookie:([^;]*);/', $data[0], $matches);
             $cookie = substr($matches[1][0], 1);
