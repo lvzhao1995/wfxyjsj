@@ -1,0 +1,12 @@
+<extend name="Public/base" />
+<block name="content">
+<section class="am-container">
+<eq name="status" value="0">
+    <p>信息门户取消绑定成功！<a href="{$bindUrl}">如需绑定其他账号请点击</a></p>
+<else />
+    <p>你没有进行任何绑定！<a href="{$bindUrl}">如需绑定账号请点击</a></p>
+</eq>
+  </section>
+</block>
+<block name="javascript">
+</block>

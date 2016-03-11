@@ -253,7 +253,7 @@ class JwcController extends Controller
         }
         if (! empty($data)) {
             if (isset($data['$kecheng_json']) && ($data['kecheng_json'] == '' || $data['kecheng_json'] == 'null')) {
-                $cookie = R('Info/getJwcCookie', $openid);
+                $cookie = R('Info/getJwcCookie', array($openid));
                 if ($cookie == 404) {
                     return $cookie;
                 } elseif ($cookie) {
@@ -327,7 +327,7 @@ class JwcController extends Controller
                     $content = $this->returnKebiao($kecheng[7]);
                     break;
                 case '成绩':
-                    $cookie = R('Info/getJwcCookie', $openid);
+                    $cookie = R('Info/getJwcCookie', array($openid));
                     if ($cookie == 404) {
                         $content = '服务器不太稳定，请隔几十秒再试\ue403';
                     } elseif ($cookie) {
@@ -350,7 +350,7 @@ class JwcController extends Controller
                     }
                     break;
                 case '选修课':
-                    $cookie = R('Info/getJwcCookie', $openid);
+                    $cookie = R('Info/getJwcCookie', array($openid));
                     if ($cookie == 404) {
                         $content = '服务器不太稳定，请隔几十秒再试\ue403';
                     } elseif ($cookie) {
@@ -361,7 +361,7 @@ class JwcController extends Controller
                     }
                     break;
                 case '报名':
-                    $cookie = R('Info/getJwcCookie', $openid);
+                    $cookie = R('Info/getJwcCookie', array($openid));
                     if ($cookie == 404) {
                         $content = '服务器不太稳定，请隔几十秒再试\ue403';
                     } elseif ($cookie) {

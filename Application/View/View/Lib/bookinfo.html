@@ -1,0 +1,28 @@
+<extend name="Public/base" />
+<block name="content">
+<section class="am-container">
+<eq name="status" value="404">
+<h1>好可惜，学校的服务器出问题了呢！请稍后再试吧</h1>
+<else />
+{$book.list}
+{$book.info}
+</eq>
+</section>
+</block>
+<block name="javascript">
+<script>
+$("#item_detail").attr("style"," ");
+$("#item").attr("class","am-table am-table-bordered am-table-striped");
+$("#showMoreAnchor").remove();
+$(function(){
+	var isbn=$("#isbn").next("dd").text();
+	isbn=isbn.substr(0,isbn.indexOf("/"));
+	$.getJSON("{$doubanUrl}?isbn="+isbn.replace(/-/g,""),function(json){
+		$("#intro").html(json.summary );
+		if(json.summary.length > 0)
+			$("#douban_content").show();
+	});
+});
+
+</script>
+</block>

@@ -1,0 +1,104 @@
+<extend name="Public/base" />
+<block name="css">
+<link rel="stylesheet" href="http://at.alicdn.com/t/font_1439457547_963348.css">
+<style type="text/css">
+.main {
+	border: solid #ddd 1px;
+	margin: 1rem;
+}
+
+.main>div {
+	margin: 1rem;
+}
+
+.main>div>h3 {
+	display: inline;
+	font-weight: 500;
+}
+
+.main>ul {
+	padding: 0;
+}
+
+.main>ul>li {
+	list-style: none;
+	padding: 0 1rem;
+}
+
+.main>ul>li>span {
+	font-family: "iconfont";
+}
+
+a {
+	color: black;
+}
+
+a:focus, a:hover {
+	color: #000;
+}
+</style>
+</block>
+<block name="content">
+<section class="am-container" id="ft-data">
+  <form class="am-form am-form-inline" method="post">
+    <div class="am-form-group">
+      <select id="searchType">
+        <option value="title" selected>题名</option>
+        <option value="author">责任者</option>
+        <option value="keyword">主题词</option>
+        <option value="isbn">ISBN/ISSN</option>
+        <option value="asordno">订购号</option>
+        <option value="coden">分类号</option>
+        <option value="callno">索书号</option>
+        <option value="publisher">出版社</option>
+        <option value="series">丛书名</option>
+        <option value="tpinyin">题名拼音</option>
+        <option value="apinyin">责任者拼音</option>
+      </select>
+    </div>
+    <div class="am-form-group">
+      <input id="searchStr" type="text" class="am-radius" required value='{$keyword}'
+        placeholder="输入关键词">
+    </div>
+    <input type="submit" class="am-btn am-btn-default" value="查询">
+  </form>
+  <br>
+  <div id="content"></div>
+</section>
+</block>
+<block name="javascript"> <script>
+  $(function(){
+    $("form").submit(function(){
+      $.AMUI.progress.start();
+      $.post('{$submitUrl}',{
+        'searchType':$("#searchType").val(),
+        'searchStr':$('#searchStr').val(),
+        'openid':'{$openid}'
+      },function(msg){
+        $.AMUI.progress.done();
+        var content='';
+        switch(msg.status){
+        case 404:
+        	content="服务器开小差了，请稍后再试";break;
+        case 401:
+        	content="没有找到相关图书，请更换关键词或检索条件后重试";break;
+        default:
+        	msg.data.forEach(function(tmp){//@todo
+        		content+='<a href="bookinfo.php?marc_no='+tmp.marc_no+'&openid={$openid}">'
+                content+='<div class="main"><div><h3>'+tmp.name+'</h3>';
+                if(tmp.no>0){
+                	content+=' <span class="am-badge am-badge-success am-fr">可借</span>';
+                }else{
+                	content+=' <span class="am-badge am-badge-warning am-fr">不可借</span>';
+                }
+                content+='</div><ul><li><span class="icon-info"></span>'+tmp.num;
+                content+='</li><li><span class="icon-people"></span>'+tmp.people;
+                content+='</li><li><span class="icon-building"></span>'+tmp.press+'</li></ul></div></a>';
+        	});
+        }
+        $("#content").html(content);
+      });
+      return false;
+    });
+  });
+  </script> </block>

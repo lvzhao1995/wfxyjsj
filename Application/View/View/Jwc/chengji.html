@@ -1,6 +1,6 @@
 <extend name="Public/base" /> <block name="content">
 <section class="am-container">
-  <present name="nobind">
+  <eq name="status" value="401">
       <h3>您尚未绑定！<a href="{$bindurl}">点击绑定</a></h3>
   <else />
   <form class="am-form am-form-inline" method="post">
@@ -23,7 +23,7 @@
   </form>
   <br>
   <div id="content"></div>
-  </present>
+  </eq>
 </section>
 </block> <block name="javascript"> <script>
 	$(function() {

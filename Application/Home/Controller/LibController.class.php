@@ -3,7 +3,7 @@ namespace Home\Controller;
 
 use Think\Controller;
 
-class IndexController extends Controller
+class LibController extends Controller
 {
 
     private $url;
@@ -66,7 +66,7 @@ class IndexController extends Controller
         $bookdetail['status'] = 0;
         for ($i = 0; $i < $j; $i ++) {
             $bookdetail['data'][$i]['name'] = $this->unicode_decode(str_replace($qian, $hou, $booklist[1][$i]));
-            $bookdetail['data'][$i]['num'] = str_replace('<br>', ' ', str_replace($qian, $hou, $booklist[2][$i]));
+            $bookdetail['data'][$i]['num'] = str_replace(array('<br>','复本'), array(' ',''), str_replace($qian, $hou, $booklist[2][$i]));
             $bookdetail['data'][$i]['people'] = $this->unicode_decode(str_replace($qian, $hou, $booklist[3][$i]));
             $bookdetail['data'][$i]['press'] = $this->unicode_decode(str_replace($qian, $hou, $booklist[4][$i]));
             $bookdetail['data'][$i]['marc_no'] = $this->unicode_decode(str_replace($qian, $hou, $booklist[5][$i]));
@@ -212,7 +212,7 @@ class IndexController extends Controller
                 return $Result;
             }
         } else {
-            $cookie = R('Info/getLibCookie', $openid);
+            $cookie = R('Info/getLibCookie', array($openid));
             if ($cookie === 403) {
                 $Result['replytype'] = 0;
                 $Result['content'] = '需要绑定才能使用此功能，<a href="' . $this->selfurl . U('View/Login/index', 'openid=' . $openid) . '">点击绑定</a>';
@@ -325,7 +325,7 @@ class IndexController extends Controller
             );
             return $resData;
         } else {
-            return false;
+            return 404;
         }
     }
 
