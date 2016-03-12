@@ -1,0 +1,39 @@
+<extend name="Public/base" /> 
+<block name="content">
+<section class="am-container">
+  <switch name="status">
+    <case value="403">
+        <h3>您尚未绑定！<a href="{$bindUrl}">点击绑定</a></h3>
+    </case>
+    <case value="404">
+        <h3>非常抱歉，我们暂时无法访问学校服务器！请稍后再试</h3>
+    </case>
+    <case value="0">
+      <empty name="xxdata">
+        <p>没有选课呢~</p>
+      <else />
+        <table class="am-table am-table-striped">
+          <thead>
+            <tr>
+              <th>课程名</th>
+              <th>授课教师</th>
+              <th>上课教室</th>
+              <th>上课时间</th>
+            </tr>
+          </thead>
+          <tbody>
+            <foreach name="xxdata" item="v">
+              <tr>
+                <td>{$v.kecheng}</td>
+                <td>{$v.teacher}</td>
+                <td>{$v.jiaoshi}</td>
+                <td>{$v.date}</td>
+              </tr>
+            </foreach>
+          </tbody>
+        </table>
+      </empty>
+    </case>
+  </switch>
+</section>
+</block>

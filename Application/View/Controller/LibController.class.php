@@ -13,7 +13,9 @@ class LibController extends Controller
             $this->error('请在微信中点击自动回复的链接打开本页面！');
         }
         $marc_no = I('get.marc_no');
-        $book = R('Home/Lib/getBookInfo', array($marc_no));
+        $book = R('Home/Lib/getBookInfo', array(
+            $marc_no
+        ));
         if ($book == 404) {
             $this->status = 404;
         } else {
@@ -42,48 +44,115 @@ class LibController extends Controller
         if ($openid == '') {
             $this->error('请在微信中点击自动回复的链接打开本页面！');
         }
-        $keyword=I('get.keyword');
+        $keyword = I('get.keyword');
         
-        $this->title="书目检索";
-        $this->keyword=$keyword;
-        $this->submitUrl=U('Lib/result');
-        $this->openid=$openid;
+        $this->title = "书目检索";
+        $this->keyword = $keyword;
+        $this->openid = $openid;
+        $this->submitUrl = U('Lib/result');
+        $this->bookinfoUrl = U('Lib/bookinfo', 'openid=' . $openid);
         $this->display();
     }
-    
-    public function result(){
+
+    public function result()
+    {
         if (isset($_POST['searchType'])) {
             $searchType = I('post.searchType');
             $searchStr = I('post.searchStr');
-            $openid=I('post.openid');
+            $openid = I('post.openid');
             $lib = A('Home/Lib');
             $res = $lib->seach($searchStr, $searchType, false);
-            if($res['status']==0){
-                foreach ($res['data'] as $k=>$v){
+            if ($res['status'] == 0) {
+                foreach ($res['data'] as $k => $v) {
                     preg_match("/可借：([0-9]{1,2})/", $v['num'], $num);
-                    $res['data'][$k]['no']=(int)$num[1];
+                    $res['data'][$k]['no'] = (int) $num[1];
                 }
             }
-            $this->ajaxReturn($res);
-//             if ($res[0]['name'] == '未检索到相关图书，请更换关键词重试！') {
-//                 echo '<div class="main"><div><h3>未检索到相关图书，请更换关键词重试！</h3></div></div>';
-//             }else{
-//                 foreach ($res as $num => $datil) {
-//                     echo '<a href="bookinfo.php?marc_no=', $datil['marc_no'], '&openid=', $openid, '">';
-//                     echo '<div class="main"><div><h3>', $datil['name'], '</h3>';
-//                     preg_match("/可借复本：([0-9]{1,2})/", $datil['num'], $num);
-//                     if ((int) $num[1] > 0) {
-//                         echo ' <span class="am-badge am-badge-success am-fr">可借</span>';
-//                     } else {
-//                         echo ' <span class="am-badge am-badge-warning am-fr">不可借</span>';
-//                     }
-//                     $datil['num']=str_replace('复本', '', $datil['num']);
-//                     echo '</div><ul><li><span class="icon-info"></span>'. $datil['num'];
-//                     echo '</li><li><span class="icon-people"></span>', $datil['people'];
-//                     echo '</li><li><span class="icon-building"></span>', $datil['press'], '</li></ul></div></a>';
-//                 }
-//             }
+        } else {
+            $res['status'] == 401;
+        }
+        $this->ajaxReturn($res);
+    }
+
+    public function jieyue()
+    {
+        $openid = I('get.openid', '');
+        if ($openid == '') {
+            $this->error('请在微信中点击自动回复的链接打开本页面！');
         }
         
+        $lib = A('Home/Lib');
+        $return_str = "";
+        $cookie = R('Home/Info/getLibCookie',array($openid));
+        if ($cookie == 404) {
+            $status=404;
+        } elseif ($cookie==403) {
+            $status=403;
+        } else {
+            $data = $lib->getLibData($cookie);
+            if ($data[1]) {
+                $status=404;
+            } else {
+                $book = $lib->trimData($data);
+                $status=0;
+            }
+        }
+        
+        $this->status=$status;
+        $this->openid=$openid;
+        $this->book=$book;
+        $this->title='借阅情况';
+        $this->bindUrl=U('Info/bind','openid='.$openid);
+        $this->xvjieUrl=U('Lib/xvjie');
+        $this->display();
+    }
+    
+    public function xvjie(){
+        if (isset($_GET['openid'])) {
+            $openid = I('get.openid');
+            $lib = A('Home/Lib');
+            $return_str = "";
+            $cookie=R('Home/Info/getLibCookie',array($openid));
+            $data = $lib->getLibData($cookie);
+            if ($data[1]) {
+                $return_str = '操作出错，请重试';
+            } else {
+                $book = $lib->trimData($data);
+                $return_str=$lib->xujie($book);
+            }
+            $this->show($return_str);
+        }
+    }
+    
+    public function weizhang(){
+        $openid = I('get.openid', '');
+        if ($openid == '') {
+            $this->error('请在微信中点击自动回复的链接打开本页面！');
+        }
+        
+        $lib = A('Home/Lib');
+        $cookie=R('Home/Info/getLibCookie',array($openid));
+        if($cookie==404){
+            $status=404;
+        }elseif($cookie==403){
+            $status=403;
+            
+        }else{
+            $res = $lib->weizhang($cookie);
+            if($res['status']==401){
+                $status=401;
+            }else{
+                $status=0;
+                $books=$res['data'];
+            }
+        }
+        
+        $this->status=$status;
+        $this->res=$res;
+        $this->openid=$openid;
+        $this->title='图书馆违章情况';
+        $this->bindUrl=U('View/Info/bind','openid='.$openid);
+        $this->bookinfoUrl=U('View/Lib/bookinfo','openid='.$openid);
+        $this->display();
     }
 }

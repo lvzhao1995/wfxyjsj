@@ -5,6 +5,7 @@
 .main {
 	border: solid #ddd 1px;
 	margin: 1rem;
+    cursor: pointer; 
 }
 
 .main>div {
@@ -27,6 +28,10 @@
 
 .main>ul>li>span {
 	font-family: "iconfont";
+}
+
+.main>.marc_no{
+	display:none;
 }
 
 a {
@@ -83,9 +88,8 @@ a:focus, a:hover {
         case 401:
         	content="没有找到相关图书，请更换关键词或检索条件后重试";break;
         default:
-        	msg.data.forEach(function(tmp){//@todo
-        		content+='<a href="bookinfo.php?marc_no='+tmp.marc_no+'&openid={$openid}">'
-                content+='<div class="main"><div><h3>'+tmp.name+'</h3>';
+        	msg.data.forEach(function(tmp){
+                content+='<div class="main" onclick="javascript:main_click(this)"><div><h3>'+tmp.name+'</h3>';
                 if(tmp.no>0){
                 	content+=' <span class="am-badge am-badge-success am-fr">可借</span>';
                 }else{
@@ -93,7 +97,8 @@ a:focus, a:hover {
                 }
                 content+='</div><ul><li><span class="icon-info"></span>'+tmp.num;
                 content+='</li><li><span class="icon-people"></span>'+tmp.people;
-                content+='</li><li><span class="icon-building"></span>'+tmp.press+'</li></ul></div></a>';
+                content+='</li><li><span class="icon-building"></span>'+tmp.press+'</li></ul>';
+                content+='<span class="marc_no">'+tmp.marc_no+'</span></div>';
         	});
         }
         $("#content").html(content);
@@ -101,4 +106,10 @@ a:focus, a:hover {
       return false;
     });
   });
+  function main_click(e){
+    	var marc_no;
+    	marc_no=$(e).children(".marc_no").text();
+    	console.log(marc_no);
+    	location.href="{$bookinfoUrl}?marc_no="+marc_no;
+    }
   </script> </block>

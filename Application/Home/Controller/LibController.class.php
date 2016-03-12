@@ -362,7 +362,7 @@ class LibController extends Controller
                 }
             }
         } else {
-            $resData['status'] = '没有违章信息！';
+            $resData['status'] = 401;
         }
         return $resData;
     }

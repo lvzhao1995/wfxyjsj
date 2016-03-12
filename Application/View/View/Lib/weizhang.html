@@ -1,0 +1,42 @@
+<extend name="Public/base" />
+<block name="content">
+<section class="am-container">
+  <switch name="status">
+  <case value="404">
+      <h3>非常抱歉，我们暂时无法访问学校服务器！请稍后再试</h3>
+  </case>
+  <case value="403">
+      <h3>您尚未绑定信息门户！<a href="{$bindUrl}">点击绑定</a></h3>
+  </case>
+  <case value="401">
+      <p>真棒，没有违章信息！</p>
+  </case>
+  <case value="0">
+    <div class="am-scrollable-horizontal">
+      <table class="am-table am-table-bordered am-table-striped am-table-compact">
+      <thead>
+        <tr>
+          <th>书名</th>
+          <th>书库</th>
+          <th>应还日</th>
+          <th>应缴</th>
+          <th>状态</th>
+        </tr>
+      </thead>
+      <tbody>
+      <foreach name="books" item="book">
+          <tr>
+            <td><a href="{$bookinfoUrl}?marc_no={$book.marc_no}">{$book.name}</a></td>
+            <td  class="am-text-nowrap">{$book.guanc}</td>
+            <td  class="am-text-nowrap">{$book.date}</td>
+            <td>{$book.need}</td>
+            <td  class="am-text-nowrap">{$book.zhuangtai}</td>
+          </tr>
+      </foreach>
+      </tbody>
+    </table>
+    </div>
+    </case>
+ </switch>
+</section>
+</block>

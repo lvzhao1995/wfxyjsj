@@ -60,8 +60,6 @@ class JwcController extends Controller
                         'jiaoshi' => $str_block[2][7],
                         'date' => $str_block[2][6]
                     );
-                    // $redata .= "\n" . '\ue231课程名称：' . $str_block[2][0] . "\n" . '\ue005授课教师：' . $str_block[2][1] . "\n" . '\ue036上课教室：' . $str_block[2][7];
-                    // $redata .= "\n" . '\ue026上课时间：' . $str_block[2][6] . "\n" . '————————';
                 } else {
                     $flag ++;
                 }
@@ -262,15 +260,15 @@ class JwcController extends Controller
                     $data['openid'] = $openid;
                     $db->save($data);
                 } else {
-                    return 401;
+                    return 403;
                 }
             }
             $rs = array();
-            $rs['kecheng_json'] = $data['kecheng_json'];
+            $rs['kecheng_json'] = isset($data['kecheng_json'])?$data['kecheng_json']:'';
             $rs['studentid'] = $data['number'];
             return $rs;
         } else {
-            return 401;
+            return 403;
         }
     }
 

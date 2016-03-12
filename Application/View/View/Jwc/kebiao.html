@@ -1,0 +1,77 @@
+<extend name="Public/base" />
+<block name="css">
+<style type="text/css">
+table td {
+  min-height: 100px;
+}
+</style>
+</block>
+<block name="content">
+<section class="am-container" id="main">
+    <div class="am-text-center" id="msg" style="display: none">刷新成功！</div>
+<switch name="status">
+  <case value="403">
+     <h3>您尚未绑定！<a href="{$bindUrl}">点击绑定</a></h3>
+  </case>
+  <case value="404">
+     <h3>非常抱歉，我们暂时无法访问学校服务器！请稍后再试</h3>
+  </case>
+  <case value="0">
+        <div style="padding-bottom:2rem;">
+        <gt name="week" value="0">
+            <h4 style="display:inline;">当前第{$week}周</h4>
+        <else />
+            <h4 style="display:inline;">当前未开学</h4>
+        </gt>
+        <button class="am-btn am-btn-default am-fr" id="clearkebiao">刷新课表</button></div>
+        <div class="am-scrollable-horizontal"><table class="am-table am-table-bordered am-table-compact">
+        <thead><tr class="am-text-nowrap"><th></th><th>星期一</th><th>星期二</th>
+        <th>星期三</th><th>星期四</th><th>星期五</th><th>星期六</th><th>星期天</th></tr></thead>
+        <for start="1" end="10" step="2">
+            <tr><td>第{$i}-{$i+1}节</td>
+            <for start="1" end="8" name="d">
+                <td class="{$color[array_rand($color)]}">
+                <foreach name="kebiao[$d][$i]" item="v">
+                    {$v.coursename}@{$v.courseplace}
+                    <span class="am-badge am-badge-secondary">{$v.during}
+                    <present name="v['coursesingle']">
+                        {$v['coursesingle'] ? '单周' : '双周'}</span><br>';
+                    <else />
+                                                                 周</span><br>
+                    </present>
+                </foreach>
+                </td>
+            </for>
+            </tr>
+        </for>
+        </table>
+    </div>
+    <ol>
+      <li>本课表与教务处个人课表保持一致，如发现不同请点击右上角刷新课表进行刷新</li>
+      <li>如刷新后仍为上学期课表或空白，则表示教务处暂未更新课表，请不要重复刷新</li>
+    </ol>
+    </case>
+</switch>
+  </section>
+</block>
+<block name="javascript">
+<script type="text/javascript">
+  $(function(){
+    $("#clearkebiao").click(function(){
+      $.AMUI.progress.start();
+      $.post('{$clear}',{
+        'openid':'{$openid}'
+      },function(msg){
+        $.AMUI.progress.done();
+        if(msg.status==1){
+          $("#msg").show();
+          setTimeout(function() {
+            location.reload();
+              }, 1000);
+        }
+      });
+    });
+  })
+  $("th").attr("style","min-width:"+$("#main").width()/8+"px");
+  </script>
+</block>

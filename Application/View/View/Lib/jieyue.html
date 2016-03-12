@@ -1,0 +1,58 @@
+<extend name="Public/base" />
+<block name="css">
+<style type="text/css">
+th {
+  min-width: 4em;
+}
+</style>
+</block>
+<block name="content">
+<section class="am-container">
+<switch name="status">
+<case value="403">
+    <h3>您尚未绑定信息门户！<a href="{$bindUrl}">点击绑定</a></h3>
+</case>
+<case value="404">
+    <h3>非常抱歉，我们暂时无法访问学校服务器！请稍后再试</h3>
+</case>
+<case value="0">
+  <eq name="book.count" value="0">
+    <h3>当前无借阅记录，快去图书馆借书吧</h3>
+  <else />
+    <center>当前借阅{$book.count}本书</center>
+    <table class="am-table am-table-striped"><thead><tr><th>书名</th><th>应还日期</th>
+        <th>所属书库</th><th>是否可续借</th></tr></thead><tbody>
+    <foreach name="book.data" item="v">
+        <?php $xvjie = strtotime($v['time']) - 2592000; ?>
+            <tr><td>{$v.name}</td><td>{$v.time}
+            <?php echo (strtotime($v['time'])+24*60*60) < time() ? ' <span class="am-badge am-badge-danger">已超期</span>' : ''; ?>
+            </td><td>{$v.shuku}</td><td>
+            <?php echo (! $v['jieci']) && $xvjie < time() && (! $book[0]['chaoqi']) ? "是" : "否"; ?></td></tr>
+    </foreach>
+    </tbody></table>
+    <?php if($book['chaoqi']){ ?>
+        <p>存在超期图书，无法续借，请尽快处理！</p>
+    <?php }else{ ?>
+        <p id="XJres" style="display: none"></p>
+        <a class="am-btn am-btn-primary" href="javascript:xujie()">一键续借</a>
+    <?php }?>
+   </eq>
+   </case>
+</switch>
+
+  </section>
+</block>
+<block name="javascript">
+<script>
+  function xujie(){
+    $("#XJres").html("<div class=\"am-progress am-progress-striped am-progress-sm am-active \"><div class=\"am-progress-bar am-progress-bar-secondary\" style=\"width: 100%\"></div></div>");
+    $("#XJres").show();
+    $.get("{$xvjieUrl}", {
+      openid : '{$openid}'
+    }, function(msg) {
+      $("#XJres").html("");
+      $("#XJres").html(msg);
+    });
+  }
+  </script>
+</block>

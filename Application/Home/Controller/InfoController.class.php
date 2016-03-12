@@ -58,7 +58,7 @@ class InfoController extends Controller
             $db->where('openid=:openid')
                 ->bind(':openid', $openid)
                 ->delete();
-            $encrypt = new do_encrypt();
+            $encrypt = new \Home\Controller\do_encrypt();
             $data = array(
                 'studentid' => $number,
                 'password' => $encrypt->encrypt($password)
