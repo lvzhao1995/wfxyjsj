@@ -1,0 +1,92 @@
+<notempty name="data">
+<style>
+.dd-dragel {
+	position: absolute;
+	pointer-events: none;
+	z-index: 9999;
+}
+
+.dd-placeholder {
+	min-height: 43px;
+	margin-top: 2px;
+	margin-buttom: 2px;
+	border: dashed 1px #0e90d2;
+	background: #d4d4d4
+}
+
+li {
+	cursor: default;
+}
+
+i {
+	cursor: pointer;
+}
+</style>
+
+<div class="am-u-sm-6">
+	<h4>图文列表</h4>
+	<table class="am-table am-table-bordered am-table-hover">
+		<thead>
+			<tr>
+				<th>标题</th>
+				<th>内容</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+    <foreach name="data" item="v">
+        <tr><td>{$v.title}
+        </td><td><a href="{$v.url}" target="_blank">点击查看</a>
+        </td><td><a onclick="addtuwen('{$v.title}','{$v.abstract}','{$v.url}','{$v.imgurl}');" href="javascript:void(0)">添加</a></td></tr>
+    </foreach>
+		</tbody>
+	</table>
+</div>
+<div class="dd am-u-sm-6 am-u-end" id="selecttuwenlist">
+	<h4>已选图文（可拖动排序）</h4>
+	<ul class="am-list am-list-static">
+	</ul>
+</div>
+<div class="am-u-sm-center" style="margin-top:10px;">
+	<button onclick="submittuwen();" class="am-btn am-btn-defult am-center">确定</button>
+</div>
+<else />
+    <p>暂无图文</p>
+</notempty>
+
+<script src="/{$Think.config.install_path}/Public/jquery.nestable.js"></script>
+<script>
+function addtuwen(title,description,url,imgurl){
+	if($("#selecttuwenlist>ul").children("li").size()<10){
+	    var item=$("<li></li>").html('<i onclick="deltuwen(this);" class="am-icon-close"></i><div class="dd-handle" style="display: inline-block;width: 90%;">'+title+'</div>').attr({
+		    'data-title':title,
+		    'data-description':description,
+		    'data-url':url,
+		    'data-picurl':imgurl
+	    });
+	    $("#selecttuwenlist>ul").append(item);
+	}else{
+		msg_show('图文数量已达上限！');
+	}
+}
+function deltuwen(e){
+	$(e).closest('li').remove();
+}
+function submittuwen(){
+	$("#urlcontent").val(JSON.stringify($('#selecttuwenlist').nestable('serialize')));
+	$('#alert-modal').modal("close");
+	showtuwen();
+}
+$(function(){
+    $('#selecttuwenlist').nestable({
+	    'maxDepth':1,
+	    'rootClass':'dd',
+	    'listNodeName':'ul',
+	    'listClass':'am-list am-list-static',
+	    'itemClass':'',
+	    'offy':25
+    });
+    $('#selecttuwenlist').attr('style','height:'+$('#alert-modal').height()*0.8+'px;overflow-y:scroll');
+    $('#selecttuwenlist').prev().attr('style','height:'+$('#alert-modal').height()*0.8+'px;overflow-y:scroll');
+});
+</script>

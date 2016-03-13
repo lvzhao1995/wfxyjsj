@@ -1,9 +1,9 @@
 <?php
 namespace View\Controller;
 
-use Think\Controller;
+use View\Common\PublicController;
 
-class LibController extends Controller
+class LibController extends PublicController
 {
 
     public function bookinfo()
@@ -136,7 +136,6 @@ class LibController extends Controller
             $status=404;
         }elseif($cookie==403){
             $status=403;
-            
         }else{
             $res = $lib->weizhang($cookie);
             if($res['status']==401){
@@ -148,11 +147,19 @@ class LibController extends Controller
         }
         
         $this->status=$status;
-        $this->res=$res;
+        $this->books=$books;
         $this->openid=$openid;
         $this->title='图书馆违章情况';
         $this->bindUrl=U('View/Info/bind','openid='.$openid);
         $this->bookinfoUrl=U('View/Lib/bookinfo','openid='.$openid);
         $this->display();
+    }
+    
+    public function _empty($name){
+        $openid = I('get.openid');
+        if ($openid == '') {
+            $this->error('请在微信中点击自动回复的链接打开本页面！');
+        }
+        $this->redirect('Index/index', array('openid' => $openid), 0);
     }
 }

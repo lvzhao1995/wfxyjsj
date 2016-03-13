@@ -1,9 +1,9 @@
 <?php
 namespace View\Controller;
 
-use Think\Controller;
+use View\Common\PublicController;
 
-class IndexController extends Controller
+class IndexController extends PublicController
 {
 
     public function index()
@@ -12,7 +12,14 @@ class IndexController extends Controller
         if ($openid == '') {
             $this->error('请在微信中点击自动回复的链接打开本页面！');
         }
-        $this->openid = $openid.'.html';
         $this->display();
+    }
+    
+    public function _empty($name){
+        $openid = I('get.openid');
+        if ($openid == '') {
+            $this->error('请在微信中点击自动回复的链接打开本页面！');
+        }
+        $this->redirect('Index/index', array('openid' => $openid), 0);
     }
 }

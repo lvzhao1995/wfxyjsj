@@ -49,7 +49,6 @@
         'openid':'{$openid}'
       },function(msg){
         $.AMUI.progress.done();
-        msg=jQuery.parseJSON(msg);
         if(msg.status==0){
           $("#confirm-msg").html(msg.msg);
           $('#my-confirm').modal({

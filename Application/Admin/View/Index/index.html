@@ -1,0 +1,41 @@
+<extend name="Public/base" />
+<block name="content">
+<eq name="status" value="1">
+<div class="am-alert am-alert-danger">请先对公众号进行配置，否则不能使用</div>
+</eq>
+<ul class="am-list am-u-sm-4 am-list-border am-list-striped" style="margin-top: 1.6rem">
+  <li class="am-text-xl"><a href="javascript:void(0)" style="cursor: default"><i
+      class="am-icon-comment am-icon-fw"></i>内容运营</a></li>
+  <li><a href="javascript:void(0)" onclick="openurl(this)" url="keywordlist.php"
+    class="am-link-muted" id="keylist"><i class="am-icon-key am-icon-fw am-text-primary"></i>关键词自动回复</a></li>
+  <li><a href="javascript:void(0)" onclick="openurl(this)" url="reply.php?ordernum=2"
+    class="am-link-muted"><i class="am-icon-mail-reply am-icon-fw am-text-primary"></i>关注自动回复</a></li>
+  <li><a href="javascript:void(0)" onclick="openurl(this)" url="tuwenlist.php" id='tuwenlist'
+    class="am-link-muted"><i class="am-icon-leanpub am-icon-fw am-text-primary"></i>图文管理</a></li>
+  <li><a>&nbsp;</a></li>
+</ul>
+<ul class="am-list am-u-sm-4 am-list-border am-list-striped">
+  <li class="am-text-xl"><a href="javascript:void(0)" style="cursor: default"
+    class=" am-text-warning"><i class="am-icon-cubes am-icon-fw"></i>功能管理</a></li>
+  <li><a href="javascript:void(0)" onclick="openurl(this)" url="menu.php" id="menu_list"
+    class="am-link-muted"><i class="am-icon-bars am-icon-fw am-text-warning"></i>自定义菜单</a></li>
+  <li><a href="javascript:void(0)" onclick="openurl(this)" url="applist.php"
+    class="am-link-muted" id="applist"><i class="am-icon-cube am-text-warning am-icon-fw"></i>扩展应用</a></li>
+  <li><a href="javascript:void(0)" onclick="openurl(this)" url="forwardlist.php"
+    class="am-link-muted" id="forwardlist"><i
+      class="am-icon-exchange am-icon-fw am-text-warning"></i>消息转发</a></li>
+  <li><a href="javascript:void(0)" onclick="openurl(this)" url="kebiao.php"
+    class="am-link-muted" id="forwardlist"><i
+      class="am-icon-calendar am-icon-fw am-text-warning"></i>课表设置</a></li>
+</ul>
+<ul class="am-list am-u-sm-4 am-list-border am-list-striped">
+  <li class="am-text-xl"><a href="javascript:void(0)" style="cursor: default"
+    class=" am-text-success"><i class="am-icon-send am-icon-fw"></i>账户管理</a></li>
+  <li><a am-panel am-panel-default onclick="openurl(this)" url="password.php"
+    class="am-link-muted"><i class="am-icon-code am-icon-pw am-text-success"></i>修改密码</a></li>
+  <li><a href="javascript:void(0)" onclick="openurl(this)" url="manage.php"
+    class="am-link-muted" id="manage"><i class="am-icon-comments am-icon-pw am-text-success"></i>公众号管理</a></li>
+  <li><a>&nbsp;</a></li>
+  <li><a>&nbsp;</a></li>
+</ul>
+</block>

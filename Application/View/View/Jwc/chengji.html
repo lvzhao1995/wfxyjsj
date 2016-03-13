@@ -32,7 +32,7 @@
 				alert('请先选择学年或学期');
 			} else {
 				$.AMUI.progress.start();
-				$.post('{$url}',{
+				$.post('{$cxUrl}',{
 					'xn' : $('#xn').val(),
 					'xq' : $('#xq').val(),
 					'openid' : '{$openid}'
@@ -50,15 +50,15 @@
 						html='<p>'+msg.xn+'学年第'+msg.xq+'学期的成绩如下：</p>';
 						html+='<table class="am-table am-table-striped" id="chengji"><thead><tr><th>科目</th><th>卷面成绩</th><th>最终成绩</th></tr>';
 						html+='</thead><tbody>';
-						msg.data.forEach(function(tmp){
-							html+='<tr><td>'+tmp.kemu+'</td><td>'+tmp.juanmian+'</td><td>'+tmp.chengji
-							if(parseInt(tmp.chengji) >= 60||tmp.chengji == "中等" || tmp.chengji == "优秀" || tmp.chengji == "良好"	|| tmp.chengji == "及格"){
+						for(var tmp in msg.data){
+							html+='<tr><td>'+msg.data[tmp].kemu+'</td><td>'+msg.data[tmp].juanmian+'</td><td>'+msg.data[tmp].chengji
+							if(parseInt(msg.data[tmp].chengji) >= 60||msg.data[tmp].chengji == "中等" || msg.data[tmp].chengji == "优秀" || msg.data[tmp].chengji == "良好"	|| msg.data[tmp].chengji == "及格"){
 								html+=' <span class="am-badge am-badge-success">通过</span>';
 							}else{
 								html+=' <span class="am-badge am-badge-warning">未通过</span>';
 							}
 							html+='</td></tr>';
-						});
+						}
 						html+='</tbody></table>';
 						$('#content').html(html);
 					}

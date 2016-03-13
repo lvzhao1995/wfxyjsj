@@ -1,0 +1,73 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="viewport"
+  content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>后台登录</title>
+<!-- Set render engine for 360 browser -->
+<meta name="renderer" content="webkit">
+<!-- No Baidu Siteapp-->
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- Add to homescreen for Chrome on Android -->
+<meta name="mobile-web-app-capable" content="yes">
+<!-- Add to homescreen for Safari on iOS -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<!-- Tile icon for Win8 (144x144 + tile color) -->
+<meta name="msapplication-TileColor" content="#0e90d2">
+<link rel="stylesheet" href="http://cdn.amazeui.org/amazeui/2.4.2/css/amazeui.min.css">
+<style type="text/css">
+label {
+	color: #fff;
+}
+
+center {
+	color: #666;
+}
+</style>
+</head>
+<body style="background: url(/{$Think.config.install_path}/Public/images/bg.jpg)">
+  <div style="margin-top: 200px;">
+    <div class="am-container">
+      <eq name="status" value="1">
+      <div class="am-alert am-alert-danger am-u-sm-10 am-u-sm-offset-2">{$info}</div>
+      </eq>
+      <form name="form1" method="post" class="am-form am-form-horizontal">
+        <div class="am-form-group">
+          <label for="username" class="am-u-sm-2 am-form-label">用户名</label>
+          <div class="am-u-sm-10">
+            <input name="username" type="text" class="am-form-field am-radius" required autofocus />
+          </div>
+        </div>
+        <div class="am-form-group">
+          <label for="password" class="am-u-sm-2 am-form-label">密码</label>
+          <div class="am-u-sm-10">
+            <input name="password" type="password" class="am-form-field am-radius" required />
+          </div>
+        </div>
+        <div class="am-u-sm-10 am-u-sm-offset-2">
+          <input type="submit" class="am-btn am-btn-primary am-radius" value="　登录　"
+            style="width: 100%" />
+        </div>
+      </form>
+      <br> <br>
+      <center>Copyright &copy; 2014-2015 All Rights Reserved.</center>
+    </div>
+  </div>
+  <!--[if (gte IE 9)|!(IE)]><!-->
+  <script src="http://libs.baidu.com/jquery/2.1.1/jquery.min.js"></script>
+  <script>
+    !window.jQuery&& document.write('<script src="/{$Think.config.install_path}/Public/jquery.js"><\/script>');
+  </script>
+  <!--<![endif]-->
+  <!--[if lte IE 8 ]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<![endif]-->
+  <script src="http://cdn.amazeui.org/amazeui/2.4.2/js/amazeui.min.js"></script>
+</body>
+</html>

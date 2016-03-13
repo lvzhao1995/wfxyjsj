@@ -58,10 +58,11 @@ class InfoController extends Controller
             $db->where('openid=:openid')
                 ->bind(':openid', $openid)
                 ->delete();
-            $encrypt = new \Home\Controller\do_encrypt();
+            $encrypt = new \Home\Common\do_encrypt();
             $data = array(
                 'studentid' => $number,
-                'password' => $encrypt->encrypt($password)
+                'password' => $encrypt->encrypt($password),
+                'openid'=>$openid
             );
             
             if ($db->create($data)) {
@@ -130,7 +131,7 @@ class InfoController extends Controller
         $db = M('Info');
         $data = $db->getFieldByOpenid($openid, 'studentid,password');
         if (! empty($data)) {
-            $jiami = new do_encrypt();
+            $jiami = new \Home\Common\do_encrypt();
             $cookie = $this->login(key($data), $jiami->decrypt(current($data)));
             if ($cookie) {
                 return $cookie;

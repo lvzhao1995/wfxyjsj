@@ -4,9 +4,9 @@
 <switch name="status">
 <case value="404"><h3>服务器繁忙，请稍后再试！<h3></case>
 <case value="403"><h3>您尚未绑定！<a href="{$bindurl}">点击绑定</a></h3></case>
-<default />
+<case value="0">
   <form name="form1" action="{$submitUrl}" method="post">
-    <foreach name="$res.match.0" item="v"> <if condition="!stripos($v,'checkbox')">
+    <foreach name="res.match.0" item="v"> <if condition="!stripos($v,'checkbox')">
     {$v} </if> </foreach>
     <table class="am-table am-table-striped" id='DBGrid'>
       <thead>
@@ -44,6 +44,7 @@
     </table>
   </div>
   </empty>
+  </case>
   </switch>
 </section>
 </block>

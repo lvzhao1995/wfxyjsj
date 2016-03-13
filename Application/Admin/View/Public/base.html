@@ -1,0 +1,131 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>{$title}</title>
+
+<!-- Set render engine for 360 browser -->
+<meta name="renderer" content="webkit">
+
+<!-- No Baidu Siteapp-->
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<!-- Add to homescreen for Chrome on Android -->
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- Add to homescreen for Safari on iOS -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+
+<!-- Tile icon for Win8 (144x144 + tile color) -->
+<meta name="msapplication-TileColor" content="#0e90d2">
+<link rel="stylesheet"
+	href="http://cdn.amazeui.org/amazeui/2.4.2/css/amazeui.min.css">
+</head>
+<style>
+.banner {
+	background: url(/{$Think.config.install_path}/Public/images/banner-bg.png);
+	padding: 30px 0;
+}
+
+.am-nav-header {
+	border-left: 3px solid #3bb4f2;
+	font-size: 1.4rem;
+}
+
+#msg {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	margin: auto;
+	width: 400px;
+	text-align: center;
+	display: none;
+}
+
+li {
+	font-size: 1.4rem;
+}
+
+textarea {
+	resize: none;
+}
+</style>
+<body>
+	<div class="am-alert" id="msg" style="z-index: 1200"></div>
+	<div class="banner">
+		<div class="am-container">
+			<span class="am-fr"><a href="?action=logout">退出</a></span>
+			<h1>微信管理后台</h1>
+			<p></p>
+		</div>
+	</div>
+	<section style="padding: 30px 0;">
+		<div class="am-g am-g-fixed">
+			<div class="am-u-md-3">
+				<ul class="am-nav">
+					<li class="am-active"><a href="javascript:void(0)"
+						onclick="openurl(this)" url="zhuye.php" class="am-link-muted">后台首页</a></li>
+					<li class="am-nav-header">基础功能</li>
+					<li><a href="javascript:void(0)" onclick="openurl(this)"
+						url="reply.php?ordernum=2" class="am-link-muted">关注自动回复</a></li>
+					<li><a href="javascript:void(0)" onclick="openurl(this)"
+						url="keywordlist.php" class="am-link-muted" id="keylist">关键词自动回复</a></li>
+					<li><a onclick="openurl(this)" href="javascript:void(0)"
+						url="reply.php?ordernum=1" class="am-link-muted">消息自动回复</a></li>
+					<li><a href="javascript:void(0)" onclick="openurl(this)"
+						url="tuwenlist.php" id='tuwenlist' class="am-link-muted">图文管理</a></li>
+					<li><a href="javascript:void(0)" onclick="openurl(this)"
+						url="menu.php" id="menu_list" class="am-link-muted">自定义菜单</a></li>
+					<li class="am-nav-divider"></li>
+					<li class="am-nav-header">扩展功能</li>
+					<li><a href="javascript:void(0)" onclick="openurl(this)"
+						url="applist.php" class="am-link-muted" id="applist">扩展应用</a></li>
+					<li><a href="javascript:void(0)" onclick="openurl(this)"
+						url="forwardlist.php" class="am-link-muted" id="forwardlist">消息转发</a></li>
+					<li><a href="javascript:void(0)" onclick="openurl(this)"
+						url="tongzhilist.php" id='tongzhilist' class="am-link-muted">通知管理</a></li>
+					<li><a href="javascript:void(0)" onclick="openurl(this)"
+						url="kebiao.php" class="am-link-muted" id="forwardlist">课表设置</a></li>
+					<li class="am-nav-divider"></li>
+					<li class="am-nav-header">账户信息</li>
+					<li><a href="javascript:void(0)" onclick="openurl(this)"
+						url="password.php" class="am-link-muted">修改密码</a></li>
+					<li><a href="javascript:void(0)" onclick="openurl(this)"
+						url="manage.php" class="am-link-muted" id="manage">公众号管理</a></li>
+				</ul>
+			</div>
+      <div class="am-u-md-9" id="content">
+      <block name="content">
+			
+      </block>
+      </div>
+		</div>
+	</section>
+	<center>Copyright &copy; 2014-2015 All Rights Reserved.</center>
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="http://libs.baidu.com/jquery/2.1.1/jquery.min.js"></script>
+	<script>!window.jQuery && document.write('<script src="/{$Think.config.install_path}/Public/jquery.js"><\/script>');</script>
+	<!--<![endif]-->
+	<!--[if lte IE 8 ]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<![endif]-->
+	<script src="http://cdn.amazeui.org/amazeui/2.4.2/js/amazeui.min.js"></script>
+  <block name="javascript">
+	<script>
+	function msg_show(msg){
+		$("#msg").html(msg);
+		$("#msg").show();
+		$("#msg").delay(2000).hide(0);
+	}
+	</script>
+  </block>
+</body>
+</html>

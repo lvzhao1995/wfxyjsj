@@ -1,5 +1,5 @@
 <?php
-namespace Home\Controller;
+namespace Home\Common;
 class do_encrypt{
     function encrypt($txt, $key = null)
     {

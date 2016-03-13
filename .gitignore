@@ -4,3 +4,4 @@
 composer.json
 /Application/Runtime/
 /Application/Common/Conf/config.php
+/Uploads/

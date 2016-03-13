@@ -17,7 +17,7 @@ class JwcController extends Controller
         $this->selfurl = 'http://' . $_SERVER['HTTP_HOST'] ;
         $db = M('manage');
         $starttime = $db->field('starttime')->find();
-        if (! empty($starttime)) {
+        if (empty($starttime)) {
             $this->starttime = time() - 60;
         } else {
             $this->starttime = $starttime['starttime'];
@@ -51,7 +51,7 @@ class JwcController extends Controller
         if (preg_match_all('/<tr(?:.*?)?>(.*?)<\/tr>/ims', $kecheng[1], $_block)) {
             $flag = 0;
             $str_block = array();
-            foreach ($_block[0] as $v) {
+            foreach ($_block[1] as $v) {
                 if ($flag) {
                     preg_match_all('/<td(.*?)>(.*?)<\/td>/ims', $v, $str_block);
                     $redata[$flag] = array(
@@ -60,9 +60,9 @@ class JwcController extends Controller
                         'jiaoshi' => $str_block[2][7],
                         'date' => $str_block[2][6]
                     );
-                } else {
-                    $flag ++;
                 }
+                    $flag ++;
+                
             }
         }
         return $redata;
@@ -235,7 +235,7 @@ class JwcController extends Controller
     {
         $db = M('info');
         if ($kebiao) {
-            $data = $db->field('studentid', 'kecheng_json')
+            $data = $db->field('studentid,kecheng_json')
                 ->where(array(
                 'openid' => ':openid'
             ))
@@ -248,10 +248,11 @@ class JwcController extends Controller
             ))
                 ->bind(':openid', $openid)
                 ->find();
+            $data['kecheng_json']=1;
         }
         if (! empty($data)) {
-            if (isset($data['$kecheng_json']) && ($data['kecheng_json'] == '' || $data['kecheng_json'] == 'null')) {
-                $cookie = R('Info/getJwcCookie', array($openid));
+            if (($data['kecheng_json'] == '' || $data['kecheng_json'] == 'null'||$data['kecheng_json'] == null)) {
+                $cookie = R('Home/Info/getJwcCookie', array($openid));
                 if ($cookie == 404) {
                     return $cookie;
                 } elseif ($cookie) {
@@ -265,7 +266,7 @@ class JwcController extends Controller
             }
             $rs = array();
             $rs['kecheng_json'] = isset($data['kecheng_json'])?$data['kecheng_json']:'';
-            $rs['studentid'] = $data['number'];
+            $rs['studentid'] = $data['studentid'];
             return $rs;
         } else {
             return 403;

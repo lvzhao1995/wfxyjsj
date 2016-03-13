@@ -1,0 +1,113 @@
+<extend name="Public/base" />
+<block name="content">
+<div class="am-article">
+  <form class='am-form' method="post" id="tuwen_edit">
+    <fieldset>
+      <legend>{$title}</legend>
+      <div class='am-form-group'>
+        <label for="title">标题</label><span class="am-text-sm">（选填）</span> <input id="title"
+          type="text" value="{$tuwen.title}">
+      </div>
+      <div class='am-form-group'>
+        <label>封面</label><span class="am-text-sm">(建议尺寸：900像素*500像素，可不用)</span>
+        <div>
+          <input type='file' id="img_upload">
+          <input type="hidden" id="imgpath">
+        </div>
+        <div id="img_show"></div>
+      </div>
+      <div class="am-form-group">
+        <label for="abstract">摘要</label><span class="am-text-sm">（选填，该摘要只在发送图文消息为单条时显示）</span>
+        <textarea rows="5" id='abstract' maxlength='120' placeholder='选填，最多120个字符' id="abstract">{$tuwen.abstract}</textarea>
+      </div>
+      <div class='am-form-group'>
+        <label for="url">URL</label><span class="am-text-sm">（选填）</span> <input id="url" type="text"
+          placeholder='http://开头，可使用[openid]，回复时会替换为用户openid' pattern='http://.+' maxlength='1000'
+          value="{$tuwen.url}">
+      </div>
+      <div class="am-form-group">
+        <input value="保存" class="am-btn am-btn-default am-center" type="submit">
+      </div>
+    </fieldset>
+  </form>
+</div>
+</block>
+<block name="javascript"> 
+  <script src="/{$Think.config.install_path}/Public/uploadify/jquery.uploadify.min.js"></script>
+<script>
+$(function(){
+	$("input[type=checkbox]").uCheck();
+	$('#img_upload').uploadify({
+	    'buttonClass':'am-btn am-btn-default',
+	    'multi' : false,
+		'swf'      : '/{$Think.config.install_path}/Public/uploadify/uploadify.swf',
+		'uploader' : '{$uploadImgUrl}',
+		'fileTypeExts': '*.jpg;*.png',
+		'fileSizeLimit' : '3MB',
+		'onInit' : function (instance) {
+			    instance.button.removeClass("uploadify-button").attr('style', '').html('<i class="am-icon-cloud-upload"></i> 选择图片');
+	    },
+		'overrideEvents' : ['onSelectError', 'onDialogClose'],
+		'onSelectError':function(file, errorCode, errorMsg){  
+		    switch(errorCode) {  
+		    case -100:  
+		   	    msg_show("上传的文件数量已经超出系统限制的"+$('#img_upload').uploadify('settings','queueSizeLimit')+"个文件！");  
+		        break;  
+		    case -110:  
+		       	msg_show("文件 \""+file.name+"\" 大小超出系统限制的"+$('#img_upload').uploadify('settings','fileSizeLimit')+"大小！"); 
+		        break;  
+		    case -120:  
+		       	msg_show("文件 \""+file.name+"\" 大小异常！");  
+		        break;  
+		    case -130:  
+		       	msg_show("文件 \""+file.name+"\" 类型不正确！");  
+		        break;  
+		    default:  
+		        msgText += "错误代码：" + errorCode + "\n" + errorMsg;  
+		    }
+		},
+		'onUploadSuccess': function (file, data, response) {
+		    $('#' + file.id).find('.data').html(' 上传完毕');
+		    data=jQuery.parseJSON(data);
+		    if(data.code==0){
+			    $("#img_show").html('<img src="'+data.imgurl+'" height="100" style="padding-top:1em">');
+			    $("#imgpath").val(data.imgurl);
+		     }else{console.log(data);
+		        msg_show(data.msg);
+		     }
+		}
+	});
+	if('{$tuwen.imgurl}'!=''){
+		$("#img_show").html('<img src="{$tuwen.imgurl}" height="100" style="padding-top:1em">');
+	    $("#imgpath").val('{$tuwen.imgurl}');
+	}
+	$("#tuwen_edit").submit(function(e){
+		var content=$("#url").val();
+			var postdata={
+				'title':$("#title").val(),
+				'imgurl':$("#imgpath").val(),
+				'abstract':$("#abstract").val(),
+				'id':{$tuwen.id},
+				'url':$("#url").val()
+				};
+			$.AMUI.progress.start();
+			$.post('{$saveTuwenUrl}',postdata,function(data){
+				$.AMUI.progress.done();
+				msg_show(data.msg);
+				if(data.code==0){
+					setTimeout(function() {
+						location.href='{$tuwenlistUrl}'
+					}, 2000);
+				}
+			});
+		
+		return false;
+	});
+});
+function msg_show(msg){
+	$("#msg").html(msg);
+	$("#msg").show();
+	$("#msg").delay(2000).hide(0);
+}
+
+</script> </block>

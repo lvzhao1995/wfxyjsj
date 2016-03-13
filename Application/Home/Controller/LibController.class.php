@@ -66,7 +66,13 @@ class LibController extends Controller
         $bookdetail['status'] = 0;
         for ($i = 0; $i < $j; $i ++) {
             $bookdetail['data'][$i]['name'] = $this->unicode_decode(str_replace($qian, $hou, $booklist[1][$i]));
-            $bookdetail['data'][$i]['num'] = str_replace(array('<br>','复本'), array(' ',''), str_replace($qian, $hou, $booklist[2][$i]));
+            $bookdetail['data'][$i]['num'] = str_replace(array(
+                '<br>',
+                '复本'
+            ), array(
+                ' ',
+                ''
+            ), str_replace($qian, $hou, $booklist[2][$i]));
             $bookdetail['data'][$i]['people'] = $this->unicode_decode(str_replace($qian, $hou, $booklist[3][$i]));
             $bookdetail['data'][$i]['press'] = $this->unicode_decode(str_replace($qian, $hou, $booklist[4][$i]));
             $bookdetail['data'][$i]['marc_no'] = $this->unicode_decode(str_replace($qian, $hou, $booklist[5][$i]));
@@ -212,7 +218,9 @@ class LibController extends Controller
                 return $Result;
             }
         } else {
-            $cookie = R('Info/getLibCookie', array($openid));
+            $cookie = R('Info/getLibCookie', array(
+                $openid
+            ));
             if ($cookie === 403) {
                 $Result['replytype'] = 0;
                 $Result['content'] = '需要绑定才能使用此功能，<a href="' . $this->selfurl . U('View/Login/index', 'openid=' . $openid) . '">点击绑定</a>';
@@ -281,13 +289,13 @@ class LibController extends Controller
             $return_str .= '当前在借' . $book['count'] . '本书';
             $chenggong = $shibai = $chaoqi = 0;
             foreach ($book as $c => $v) {
-                    $xvjie = strtotime($v['time']) - 2592000;
-                    if ((! $v['jieci']) && $xvjie < time()) {
-                        $data = eval('return ' . $v['xujie']);
-                        $chenggong ++;
-                    } else {
-                        $shibai ++;
-                    }
+                $xvjie = strtotime($v['time']) - 2592000;
+                if ((! $v['jieci']) && $xvjie < time()) {
+                    $data = eval('return ' . $v['xujie']);
+                    $chenggong ++;
+                } else {
+                    $shibai ++;
+                }
             }
             if ($chenggong) {
                 $return_str .= '，续借成功' . $chenggong . '本';
@@ -336,7 +344,7 @@ class LibController extends Controller
         if (preg_match_all('/<table.*?>.*?<\/table>/ims', $data[0], $data)) {
             if (preg_match_all('/<tr>(.*?)<\/tr>/ims', $data[0][0], $data)) {
                 $info = array();
-                $i = 1;
+                $i = 0;
                 $qian = array(
                     ' ',
                     '　',
@@ -352,12 +360,14 @@ class LibController extends Controller
                     preg_match_all('/<td.*?>(.*?)<\/td>/ims', $book, $info);
                     preg_match('/<a.*?marc_no\=([0-9]*)\"/ims', $info[1][2], $marc_no);
                     preg_match('/<a.*?>(.*?)<\/a>/ims', $info[1][2], $name);
-                    $resData['data'][$i]['name'] = $this->unicode_decode(str_replace($qian, '', $name[1]));
-                    $resData['data'][$i]['marc_no'] = $marc_no[1];
-                    $resData['data'][$i]['date'] = str_replace($qian, '', $info[1][5]);
-                    $resData['data'][$i]['guanc'] = str_replace($qian, '', $info[1][6]);
-                    $resData['data'][$i]['need'] = str_replace($qian, '', $info[1][7]);
-                    $resData['data'][$i]['zhuangtai'] = str_replace($qian, '', $info[1][9]);
+                    if ($i) {
+                        $resData['data'][$i]['name'] = $this->unicode_decode(str_replace($qian, '', $name[1]));
+                        $resData['data'][$i]['marc_no'] = $marc_no[1];
+                        $resData['data'][$i]['date'] = str_replace($qian, '', $info[1][5]);
+                        $resData['data'][$i]['guanc'] = str_replace($qian, '', $info[1][6]);
+                        $resData['data'][$i]['need'] = str_replace($qian, '', $info[1][7]);
+                        $resData['data'][$i]['zhuangtai'] = str_replace($qian, '', $info[1][9]);
+                    }
                     $i ++;
                 }
             }
@@ -366,5 +376,4 @@ class LibController extends Controller
         }
         return $resData;
     }
-
 }

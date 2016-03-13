@@ -1,9 +1,9 @@
 <?php
 namespace View\Controller;
 
-use Think\Controller;
+use View\Common\PublicController;
 
-class InfoController extends Controller
+class InfoController extends PublicController
 {
 
     public function unbind()
@@ -23,6 +23,7 @@ class InfoController extends Controller
         
         $this->title = "解除绑定";
         $this->bindUrl = U('Info/bind', 'openid=' . $openid);
+        $this->display();
     }
     
     public function bind(){
@@ -63,5 +64,13 @@ class InfoController extends Controller
             }
             $this->ajaxReturn($resData);
         }
+    }
+    
+    public function _empty($name){
+        $openid = I('get.openid');
+        if ($openid == '') {
+            $this->error('请在微信中点击自动回复的链接打开本页面！');
+        }
+        $this->redirect('Index/index', array('openid' => $openid), 0);
     }
 }

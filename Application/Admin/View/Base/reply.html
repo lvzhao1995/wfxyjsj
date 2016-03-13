@@ -1,0 +1,145 @@
+<extend name="Public/base"/>
+<block name="content">
+<div class="am-article">
+  <form class="am-form" method="post">
+    <fieldset>
+      <legend>{$title}</legend>
+      <input type="hidden" id="ordernum" value="{$ordernum}">
+      <div class="am-form-group">
+        <label for="keyword">关键词</label> <input type="text" id="keyword"
+          value="{$keyword}" placeholder="多关键词用中文逗号隔开" requried>
+      </div>
+      <div class="am-form-group">
+        <label for="mode">匹配模式</label> <select id="mode">
+          <option value="0">完全匹配</option>
+          <option value="1">模糊匹配</option>
+        </select>
+      </div>
+
+      <div class="am-form-group">
+        <label for="replytype">回复方式</label> <select id="replytype"
+          onchange="selectchange()">
+          <option value="0">文本回复</option>
+          <option value="1">图文回复</option>
+        </select>
+      </div>
+      <div class="am-form-group" id="textreply">
+        <label for="replycontent">回复文本</label>
+        <textarea rows="5" id="replycontent" placeholder="文本中可使用[openid]，返回时会替换为用户openid"></textarea>
+      </div>
+      <div class="am-form-group" id="urlreply">
+        <a href="javascript:selecttuwen();"
+          class="am-btn am-btn-secondary am-btn-sm">选择图文</a> <input
+          type="hidden" id="urlcontent">
+      </div>
+      <div class="am-form-group">
+        <input class="am-btn am-btn-default" type="submit" value="提交">
+      </div>
+    </fieldset>
+  </form>
+</div>
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="alert-modal">
+  <div class="am-modal-dialog">
+    <div class="am-modal-hd">
+      <h3>选择图文</h3>
+      <a href="javascript: void(0)" class="am-close am-close-spin"
+        data-am-modal-close>&times;</a>
+    </div>
+    <div class="am-modal-bd" style="text-align: left" id="alert-content">
+    </div>
+  </div>
+</div>
+</block>
+<block name="javascript">
+<script>
+$(function(){
+  $("#replytype").val({$replytype});
+  $("#mode").val({$mode});
+  if($("#keyword").val()=="subscribe"||$("#keyword").val()=="nofind"){
+    $("#keyword,#mode").closest("div").hide();
+  }
+  $('select').selected();
+  if($("#replytype").val()=="0"){
+    $("#textreply").show().children("textarea").val('{$content}');
+    $("#urlreply").hide();
+  }else{
+    $("#textreply").hide();
+    $("#urlreply").show().children("input").val('{$content}');
+    showtuwen();
+  }
+  $("form").submit(function(e){
+    var postdata={
+        'keyword':$("#keyword").val(),
+        'replytype':$("#replytype").val(),
+          'mode':$("#mode").val(),
+          'ordernum':$("#ordernum").val()
+    };
+    if($("#replytype").val()==0){
+      postdata.content=$("#replycontent").val();
+    }else{
+      postdata.content=$("#urlcontent").val();
+    }
+    if(postdata.content==''){
+      msg_show("未填写回复内容！");
+    }else{
+      $.AMUI.progress.start();
+      $.post("{$saveUrl}",postdata,function(msg){
+        $.AMUI.progress.done();
+        msg_show(msg);
+        if(msg=="保存成功！"&&$("#keyword").val()!="subscribe"&&$("#keyword").val()!="nofind"){
+          setTimeout(function() {
+            location.href='{$keywordUrl}';
+          }, 2000);
+        }
+      });
+    }
+    return false;
+  });
+});
+function selectchange(){
+  if($("#replytype").val()=="0"){
+    $("#textreply").show();
+    $("#urlreply").hide();
+  }else{
+    $("#textreply").hide();
+    $("#urlreply").show();
+  }
+}
+function showtuwen(){
+  var urlcontent=jQuery.parseJSON($("#urlcontent").val());
+  var count=urlcontent.length;
+  var list=$("<ul></ul>").addClass("am-list am-list-border am-list-striped");
+  for(var i=0;i<count;i++){
+    list.append("<li>"+"<a target='_blank' href='"+urlcontent[i].url+"' class='am-text-truncate'>"+urlcontent[i].title+"</a></li>");
+  }
+  $("#urlreply ul").remove();
+  $("#urlreply").append(list);
+}
+function selecttuwen(){
+  $.AMUI.progress.start();
+  $('#alert-content').load('{$tuwenUrl}',function(){
+    $.AMUI.progress.done();
+    var urlcontent=jQuery.parseJSON($("#urlcontent").val());
+    var count=urlcontent.length;
+    var list=$("#selecttuwenlist>ul");
+    for(var i=0;i<count;i++){
+      list.append("<li data-title='"+urlcontent[i].title+"' data-description='"+urlcontent[i].description+
+          "' data-url='"+urlcontent[i].url+"' data-picurl='"+urlcontent[i].picurl+
+          "'><i onclick='deltuwen(this);' class='am-icon-close'></i>"+
+          "<div class='dd-handle' style='display: inline-block;width: 90%;'>"+urlcontent[i].title+"</div></li>");
+    }
+  });
+  var width;
+  var height;
+  width=$(document).width()*0.8;
+  height=$(window).height()*0.9;
+  $('#alert-modal').modal({'width':width,'height':height,'closeViaDimmer':false});
+}
+function msg_show(msg){
+	$("#msg").html(msg);
+	$("#msg").show();
+	$("#msg").delay(2000).hide(0);
+}
+
+</script>
+</block>

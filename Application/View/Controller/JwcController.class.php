@@ -1,9 +1,9 @@
 <?php
 namespace View\Controller;
 
-use Think\Controller;
+use View\Common\PublicController;
 
-class JwcController extends Controller
+class JwcController extends PublicController 
 {
 
     public function chengji()
@@ -15,7 +15,7 @@ class JwcController extends Controller
         $jwc = A('Home/Jwc');
         $rs = $jwc->isBind($openid);
         if ($rs == 403) {
-            $this->status = 403;
+            $status = 403;
         } else {
             $nj = '20' . substr($rs['studentid'], 0, 2);
             $nian = date('Y');
@@ -23,14 +23,16 @@ class JwcController extends Controller
             if ($yue > 8) {
                 $nian ++;
             }
-            
+            $status=0;
             $this->rs = $rs;
             $this->nj = $nj;
             $this->nian = $nian;
+            
         }
         
+        $this->status=$status;
         $this->bindurl = U('Info/bind', 'openid=' . $openid);
-        $this->url = U('Jwc/getcj');
+        $this->cxUrl = U('Jwc/getcj');
         $this->openid = $openid;
         $this->title = '成绩查询';
         $this->display();
@@ -67,6 +69,7 @@ class JwcController extends Controller
                     $resData['status'] = 401;
                 } else {
                     $resData = $chengji;
+                    $resData['status'] = 0;
                 }
             }
             $this->ajaxReturn($resData);
@@ -85,18 +88,22 @@ class JwcController extends Controller
         ));
         $rs = $jwc->isBind($openid);
         if ($cookie == 404 || $rs == 404) {
-            $this->status = 404;
+            $status = 404;
         } elseif ($cookie == 403 || $rs == 403) {
-            $this->status = 403;
+            $status = 403;
         } else {
+            $status=0;
             $number = $rs['studentid'];
             $res = $jwc->getBaomingMsg($number, $cookie);
-            $this->number = $number;
-            $this->imgUrl = U('View/Jwc/getimg', 'cookie=' . $cookie . '&number=' . $number);
+            
         }
         
+        $this->res=$res;
         $this->title = '活动报名';
         $this->cookie = $cookie;
+        $this->status = $status;
+        $this->number = $number;
+        $this->imgUrl = U('View/Jwc/getimg', 'cookie=' . $cookie . '&number=' . $number);
         $this->submitUrl = U('View/Jwc/subbaoming', 'openid=' . $openid);
         $this->bindurl = U('Info/bind', 'openid=' . $openid);
         $this->display();
@@ -117,7 +124,7 @@ class JwcController extends Controller
         $data = array();
         $data = curl_exec($ch);
         curl_close($ch);
-        $this->show($data);
+        echo $data;
     }
 
     public function subbaoming()
@@ -256,6 +263,7 @@ class JwcController extends Controller
             if ($cookie == 404||$cookie==403 ) {
                 $status=$cookie;
             } else{
+                $status=0;
                 $xxdata = $jwc->readxuanxiu($cookie, $number);
             }
         }
@@ -265,5 +273,13 @@ class JwcController extends Controller
         $this->status=$status;
         $this->title="选修课查询";
         $this->display();
+    }
+    
+    public function _empty($name){
+        $openid = I('get.openid');
+        if ($openid == '') {
+            $this->error('请在微信中点击自动回复的链接打开本页面！');
+        }
+        $this->redirect('Index/index', array('openid' => $openid), 0);
     }
 }
