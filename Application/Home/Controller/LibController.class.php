@@ -97,7 +97,7 @@ class LibController extends Controller
             foreach ($bookResult['data'] as $v) {
                 $bookInfo[$i]['title'] = '【' . $v['name'] . "】\n" . $v['num'] . "\n" . $v['people'] . "\n" . $v['press'];
                 $bookInfo[$i]['picurl'] = 'http://mmbiz.qpic.cn/mmbiz/vyqUV3qbLgYm0mmyDfqINh4Sz2CjHshnvRHhyNAnq3Wpv6DTZILIPxC7yuB1QXWM71GmF2QiceoAE9KNXmcPEbQ/0';
-                $bookInfo[$i]['url'] = $this->selfurl . U('View/Bookinfo/index', 'marc_no=' . $v['marc_no'] . '&openid=' . $openid);
+                $bookInfo[$i]['url'] = $this->selfurl . U('View/bookinfo/index', 'marc_no=' . $v['marc_no'] . '&openid=' . $openid);
             }
         }
         
