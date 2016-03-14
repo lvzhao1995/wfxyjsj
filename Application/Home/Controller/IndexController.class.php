@@ -2,7 +2,7 @@
 namespace Home\Controller;
 
 use Think\Controller; 
-use Wechat;
+use Home\Common\WXBizMsgCrypt;
 
 class IndexController extends Controller
 {
@@ -82,7 +82,7 @@ class IndexController extends Controller
         
         if (! empty($postStr)) {
             if ($this->encrypt_type == 'aes') {
-                $crypt = new Wechat\WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
+                $crypt = new WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
                 $postData = '';
                 $crypt->decryptMsg(I('get.msg_signature'), $this->timestamp, $this->nonce, $postStr, $postData);
                 $postStr = $postData;
@@ -246,7 +246,7 @@ class IndexController extends Controller
                     <Content><![CDATA[' . $contentStr . ']]></Content>
                     </xml>';
         if ($this->encrypt_type == 'aes') {
-            $encrypt = new Wechat\WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
+            $encrypt = new WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
             $encryptMsg = '';
             $encrypt->encryptMsg($resultStr, $this->timestamp, $this->nonce, $encryptMsg);
             echo $encryptMsg;
@@ -287,7 +287,7 @@ class IndexController extends Controller
         $resultStr .= '</Articles>
             </xml>';
         if ($this->encrypt_type == 'aes') {
-            $encrypt = new Wechat\WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
+            $encrypt = new WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
             $encryptMsg = '';
             $encrypt->encryptMsg($resultStr, $this->timestamp, $this->nonce, $encryptMsg);
             echo $encryptMsg;
@@ -388,7 +388,7 @@ class IndexController extends Controller
                 $this->respondText($res);
             } else {
                 if ($this->encrypt_type == 'aes') {
-                    $encrypt = new Wechat\WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
+                    $encrypt = new WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
                     $encryptMsg = '';
                     $encrypt->encryptMsg($data, $this->timestamp, $this->nonce, $encryptMsg);
                     echo $encryptMsg;
@@ -399,7 +399,7 @@ class IndexController extends Controller
         } else {
             if ($this->encrypt_type == 'aes') {
                 include_once __DIR__ . '/class/wxBizMsgCrypt.php';
-                $encrypt = new Wechat\WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
+                $encrypt = new WXBizMsgCrypt($this->token, $this->encodingaeskey, $this->appid);
                 $encryptMsg = '';
                 $encrypt->encryptMsg($data, $this->timestamp, $this->nonce, $encryptMsg);
                 echo $encryptMsg;

@@ -1,5 +1,5 @@
 <?php
-namespace Wechat;
+namespace Home\Common;
 
 /**
  * PKCS7Encoder class

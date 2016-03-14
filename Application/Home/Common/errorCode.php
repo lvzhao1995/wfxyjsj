@@ -1,5 +1,5 @@
 <?php
-namespace Wechat;
+namespace Home\Common;
 /**
  * error code 说明.
  * <ul>

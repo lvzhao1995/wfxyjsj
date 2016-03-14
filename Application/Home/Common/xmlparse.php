@@ -1,5 +1,5 @@
 <?php
-namespace Wechat;
+namespace Home\Common;
 
 /**
  * XMLParse class
@@ -17,7 +17,7 @@ class XMLParse
 	public function extract($xmltext)
 	{
 		try {
-			$xml = new DOMDocument();
+			$xml = new \DOMDocument();
 			$xml->loadXML($xmltext);
 			$array_e = $xml->getElementsByTagName('Encrypt');
 			$array_a = $xml->getElementsByTagName('ToUserName');

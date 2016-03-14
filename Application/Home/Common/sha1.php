@@ -1,5 +1,5 @@
 <?php
-namespace Wechat;
+namespace Home\Common;
 
 /**
  * SHA1 class
