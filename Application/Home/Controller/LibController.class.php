@@ -18,7 +18,7 @@ class LibController extends Controller
         $this->selfurl = 'http://' . $_SERVER['HTTP_HOST'];
     }
 
-    function seach($strText, $SearchType = 'title', $respond = TRUE)
+    function search($strText, $SearchType = 'title', $respond = TRUE)
     {
         $strText = urlencode($strText);
         $url1 = $this->url . 'opac/openlink.php?strSearchType=' . $SearchType . '&match_flag=forward&historyCount=1&doctype=ALL&with_ebook=off&strText=' . $strText;
@@ -82,7 +82,7 @@ class LibController extends Controller
 
     private function news($key, $openid)
     {
-        $bookResult = $this->seach($key);
+        $bookResult = $this->search($key);
         $bookInfo = array();
         $bookInfo[0]['title'] = '潍坊学院图书馆检索系统';
         $bookInfo[0]['url'] = $this->selfurl . U('View/Jiansuo/index', 'openid=' . $openid);
@@ -97,8 +97,9 @@ class LibController extends Controller
             foreach ($bookResult['data'] as $v) {
                 $bookInfo[$i]['title'] = '【' . $v['name'] . "】\n" . $v['num'] . "\n" . $v['people'] . "\n" . $v['press'];
                 $bookInfo[$i]['picurl'] = 'http://mmbiz.qpic.cn/mmbiz/vyqUV3qbLgYm0mmyDfqINh4Sz2CjHshnvRHhyNAnq3Wpv6DTZILIPxC7yuB1QXWM71GmF2QiceoAE9KNXmcPEbQ/0';
-                $bookInfo[$i]['url'] = $this->selfurl . U('View/bookinfo/index', 'marc_no=' . $v['marc_no'] . '&openid=' . $openid);
+                $bookInfo[$i]['url'] = $this->selfurl . U('View/Lib/bookinfo', 'marc_no=' . $v['marc_no'] . '&openid=' . $openid);
             }
+            $i++;
         }
         
         return $bookInfo;

@@ -61,7 +61,7 @@ class LibController extends PublicController
             $searchStr = I('post.searchStr');
             $openid = I('post.openid');
             $lib = A('Home/Lib');
-            $res = $lib->seach($searchStr, $searchType, false);
+            $res = $lib->search($searchStr, $searchType, false);
             if ($res['status'] == 0) {
                 foreach ($res['data'] as $k => $v) {
                     preg_match("/可借：([0-9]{1,2})/", $v['num'], $num);
