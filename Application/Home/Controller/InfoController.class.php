@@ -2,6 +2,7 @@
 namespace Home\Controller;
 
 use Think\Controller;
+use Home\Common\do_encrypt;
 
 class InfoController extends Controller
 {
@@ -58,11 +59,8 @@ class InfoController extends Controller
             $db->where('openid=:openid')
                 ->bind(':openid', $openid)
                 ->delete();
-            $encrypt = new \Home\Common\do_encrypt();
-            $data = array(
-                'studentid' => $number,
-                'password' => $encrypt->encrypt($password),
-                'openid'=>$openid
+            $encrypt = new do_encrypt();
+            $data = array('studentid' => $number,'password' => $encrypt->encrypt($password),'openid' => $openid
             );
             
             if ($db->create($data)) {
@@ -83,9 +81,7 @@ class InfoController extends Controller
     {
         $url = $this->url . 'userPasswordValidate.portal';
         $referer = $this->url . 'index.portal';
-        $post_data = array(
-            'Login.Token1' => $number,
-            'Login.Token2' => $password
+        $post_data = array('Login.Token1' => $number,'Login.Token2' => $password
         );
         $data = $this->visitUrl($url, null, $referer, 1, $post_data);
         
@@ -129,10 +125,14 @@ class InfoController extends Controller
     function isBind($openid)
     {
         $db = M('Info');
-        $data = $db->getFieldByOpenid($openid, 'studentid,password');
+        $data = $db->field('studentid,password')
+            ->where(array('openid' => ':openid'
+        ))
+            ->bind(':openid', $openid)
+            ->find();
         if (! empty($data)) {
-            $jiami = new \Home\Common\do_encrypt();
-            $cookie = $this->login(key($data), $jiami->decrypt(current($data)));
+            $jiami = new do_encrypt();
+            $cookie = $this->login($data['studentid'], $jiami->decrypt($data['password']));
             if ($cookie) {
                 return $cookie;
             } else {
@@ -149,8 +149,7 @@ class InfoController extends Controller
     function unBind($openid)
     {
         $db = M('info');
-        $res = $db->where(array(
-            'openid' => ':openid'
+        $res = $db->where(array('openid' => ':openid'
         ))
             ->bind(':openid', $openid)
             ->delete();
@@ -164,7 +163,7 @@ class InfoController extends Controller
     public function getJwcCookie($openid)
     {
         $cookie = $this->isBind($openid);
-        if ($cookie!=403 && $cookie != 404) {
+        if ($cookie != 403 && $cookie != 404) {
             $data = $this->visitUrl(C('JWC_URL') . 'default_zzjk.aspx', $cookie);
             preg_match_all('/Set\-Cookie:([^;]*);/', $data[0], $matches);
             $cookie = substr($matches[1][0], 1);
@@ -175,7 +174,7 @@ class InfoController extends Controller
     public function getLibCookie($openid)
     {
         $cookie = $this->isBind($openid);
-        if ($cookie!=403 && $cookie != 404) {
+        if ($cookie != 403 && $cookie != 404) {
             $data = $this->visitUrl(C('LIB_URL') . 'reader/hwthau.php', $cookie);
             preg_match_all('/Set\-Cookie:([^;]*);/', $data[0], $matches);
             $cookie = substr($matches[1][0], 1);
