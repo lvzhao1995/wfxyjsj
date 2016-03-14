@@ -282,7 +282,7 @@ class JwcController extends Controller
         }
         if ($rs == 404) {
             $content = '服务器不太稳定，请隔几十秒再试\ue403';
-        } elseif ($rs) {
+        } elseif ($rs!=403) {
             $kecheng = json_decode($rs['kecheng_json'], true);
             switch ($keyword) {
                 case '课表':
