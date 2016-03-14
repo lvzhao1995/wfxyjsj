@@ -329,7 +329,7 @@ class JwcController extends Controller
                             $content = '入口被关闭了，等下次开放吧/撇嘴开放时间教务处决定的，我们也不知道';
                         }
                     } else {
-                        $content = '你还未绑定，<a href="' . $this->selfurl . U('View/Login/index', 'openid=' . $openid) . '">点击此处</a>绑定后使用';
+                        $content = '你还未绑定，<a href="' . $this->selfurl . U('View/Info/bind', 'openid=' . $openid) . '">点击此处</a>绑定后使用';
                     }
                     break;
                 case '选修课':
@@ -341,7 +341,7 @@ class JwcController extends Controller
                         $xxdata = $this->readXuanxiu($cookie, $rs['studentid']);
                         $content = $this->dealXuanxiu($xxdata);
                     } else {
-                        $content = '你还未绑定，<a href="' . $this->selfurl . U('View/Login/index', 'openid=' . $openid) . '">点击此处</a>绑定后使用';
+                        $content = '你还未绑定，<a href="' . $this->selfurl . U('View/Info/bind', 'openid=' . $openid) . '">点击此处</a>绑定后使用';
                     }
                     break;
                 case '报名':
@@ -350,21 +350,21 @@ class JwcController extends Controller
                     if ($cookie == 404) {
                         $content = '服务器不太稳定，请隔几十秒再试\ue403';
                     } elseif ($cookie) {
-                        $content = '<a href="' . $this->selfurl . U('View/Baoming/index', 'openid=' . $openid) . '">点我开始报名</a>';
+                        $content = '<a href="' . $this->selfurl . U('View/Jwc/baoming', 'openid=' . $openid) . '">点我开始报名</a>';
                     } else {
-                        $content = '你还未绑定，<a href="' . $this->selfurl . U('View/Login/index', 'openid=' . $openid) . '">点击此处</a>绑定后使用';
+                        $content = '你还未绑定，<a href="' . $this->selfurl . U('View/Info/bind', 'openid=' . $openid) . '">点击此处</a>绑定后使用';
                     }
                     break;
             }
             if ($cookie != 404 && $cookie) {
                 if ($keyword != '成绩' && $keyword != '选修课' && $keyword != '报名' && $keyword != '评教') {
-                    $content .= "\n" . '<a href="' . $this->selfurl . U('View/Kebiao/index', 'openid=' . $openid) . '">戳我查看全部课表</a>\ue40c';
+                    $content .= "\n" . '<a href="' . $this->selfurl . U('View/Jwc/kebiao', 'openid=' . $openid) . '">戳我查看全部课表</a>\ue40c';
                 } elseif ($keyword == '成绩') {
-                    $content .= "\n" . '<a href="' . $this->selfurl . U('View/Chengji/index', 'openid=' . $openid) . '">戳我查询其他学期成绩</a>\ue40c';
+                    $content .= "\n" . '<a href="' . $this->selfurl . U('View/Jwc/chengji', 'openid=' . $openid) . '">戳我查询其他学期成绩</a>\ue40c';
                 }
             }
         } else {
-            $content = '你还未绑定，<a href="' . $this->selfurl . U('View/Login/index', 'openid=' . $openid) . '">点击此处</a>绑定后使用';
+            $content = '你还未绑定，<a href="' . $this->selfurl . U('View/Info/bind', 'openid=' . $openid) . '">点击此处</a>绑定后使用';
         }
         $Resdata = array();
         $Resdata['replytype'] = 0;

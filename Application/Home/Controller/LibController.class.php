@@ -47,31 +47,15 @@ class LibController extends Controller
             $bookdetail['status'] = 404;
             return $bookdetail;
         }
-        $qian = array(
-            ' ',
-            '　',
-            '\t',
-            '\n',
-            '\r',
-            '&nbsp;'
+        $qian = array(' ','　','\t','\n','\r','&nbsp;'
         );
-        $hou = array(
-            '',
-            '',
-            '',
-            '',
-            '',
-            ''
+        $hou = array('','','','','',''
         );
         $bookdetail['status'] = 0;
         for ($i = 0; $i < $j; $i ++) {
             $bookdetail['data'][$i]['name'] = $this->unicode_decode(str_replace($qian, $hou, $booklist[1][$i]));
-            $bookdetail['data'][$i]['num'] = str_replace(array(
-                '<br>',
-                '复本'
-            ), array(
-                ' ',
-                ''
+            $bookdetail['data'][$i]['num'] = str_replace(array('<br>','复本'
+            ), array(' ',''
             ), str_replace($qian, $hou, $booklist[2][$i]));
             $bookdetail['data'][$i]['people'] = $this->unicode_decode(str_replace($qian, $hou, $booklist[3][$i]));
             $bookdetail['data'][$i]['press'] = $this->unicode_decode(str_replace($qian, $hou, $booklist[4][$i]));
@@ -85,12 +69,12 @@ class LibController extends Controller
         $bookResult = $this->search($key);
         $bookInfo = array();
         $bookInfo[0]['title'] = '潍坊学院图书馆检索系统';
-        $bookInfo[0]['url'] = $this->selfurl . U('View/Jiansuo/index', 'openid=' . $openid);
+        $bookInfo[0]['url'] = $this->selfurl . U('View/Lib/jiansuo', 'openid=' . $openid);
         $i = 1;
         if ($bookResult['status'] == 404) {
             $bookInfo[$i]['title'] = '由于图书馆服务器响应时间过长，请点击使用网页版查询';
             $bookInfo[$i]['picurl'] = 'http://mmbiz.qpic.cn/mmbiz/vyqUV3qbLgYm0mmyDfqINh4Sz2CjHshnvRHhyNAnq3Wpv6DTZILIPxC7yuB1QXWM71GmF2QiceoAE9KNXmcPEbQ/0';
-            $bookInfo[$i]['url'] = $this->selfurl . U('View/Jiansuo/index', 'openid=' . $openid . '&keyword=' . $key);
+            $bookInfo[$i]['url'] = $this->selfurl . U('View/Lib/jiansuo', 'openid=' . $openid . '&keyword=' . $key);
         } elseif ($bookResult['status'] == 401) {
             $bookInfo[$i]['title'] = '没有找到相关图书，请更换关键词后重试';
         } else {
@@ -98,8 +82,8 @@ class LibController extends Controller
                 $bookInfo[$i]['title'] = '【' . $v['name'] . "】\n" . $v['num'] . "\n" . $v['people'] . "\n" . $v['press'];
                 $bookInfo[$i]['picurl'] = 'http://mmbiz.qpic.cn/mmbiz/vyqUV3qbLgYm0mmyDfqINh4Sz2CjHshnvRHhyNAnq3Wpv6DTZILIPxC7yuB1QXWM71GmF2QiceoAE9KNXmcPEbQ/0';
                 $bookInfo[$i]['url'] = $this->selfurl . U('View/Lib/bookinfo', 'marc_no=' . $v['marc_no'] . '&openid=' . $openid);
+                $i ++;
             }
-            $i++;
         }
         
         return $bookInfo;
@@ -107,12 +91,8 @@ class LibController extends Controller
 
     private function unicode_decode($name)
     {
-        $name = str_replace(array(
-            '&#x',
-            ';'
-        ), array(
-            '\\u',
-            ''
+        $name = str_replace(array('&#x',';'
+        ), array('\\u',''
         ), $name);
         $pattern = '/([\w]+)|(\\\u([\w]{4}))/i';
         $matches = array();
@@ -219,12 +199,11 @@ class LibController extends Controller
                 return $Result;
             }
         } else {
-            $cookie = R('Info/getLibCookie', array(
-                $openid
+            $cookie = R('Info/getLibCookie', array($openid
             ));
             if ($cookie === 403) {
                 $Result['replytype'] = 0;
-                $Result['content'] = '需要绑定才能使用此功能，<a href="' . $this->selfurl . U('View/Login/index', 'openid=' . $openid) . '">点击绑定</a>';
+                $Result['content'] = '需要绑定才能使用此功能，<a href="' . $this->selfurl . U('View/Info/bind', 'openid=' . $openid) . '">点击绑定</a>';
                 return $Result;
             }
             $data = $this->getLibData($cookie);
@@ -328,9 +307,7 @@ class LibController extends Controller
             preg_match_all('/<div id=\"item_detail\"(.*?)>(.*?)<\/div>/ims', $data, $book);
             $book[0][0] = str_replace('<div style=\"text-align:left;color:blue;\" id=\"showMoreAnchor\" ><strong>全部MARC细节信息>></strong>', '', $book[0][0]);
             $book[0][0] = str_ireplace('<dt>ISBN', '<dt id="isbn">ISBN', $book[0][0]);
-            $resData = array(
-                'list' => $booklist,
-                'info' => $book[0][0]
+            $resData = array('list' => $booklist,'info' => $book[0][0]
             );
             return $resData;
         } else {
@@ -346,13 +323,7 @@ class LibController extends Controller
             if (preg_match_all('/<tr>(.*?)<\/tr>/ims', $data[0][0], $data)) {
                 $info = array();
                 $i = 0;
-                $qian = array(
-                    ' ',
-                    '　',
-                    '\t',
-                    '\n',
-                    '\r',
-                    '&nbsp;'
+                $qian = array(' ','　','\t','\n','\r','&nbsp;'
                 );
                 $resData = array();
                 $marc_no = array();
