@@ -23,5 +23,4 @@ class IndexController extends PublicController
         $this->redirect('Index/index', array('openid' => $openid), 0);
     }
     
-    
 }

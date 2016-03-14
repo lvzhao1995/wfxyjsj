@@ -382,7 +382,7 @@ class IndexController extends Controller
                 $qq=M('manage');
                 $data=$qq->field('qq')->find();
                 $res=$resText->Content . "\n\n本消息为自动回复，可发送消息继续聊天。\n有问题请等待人工回复";
-                if(!empty($data)){
+                if(isset($data['qq'])){
                     $res.="或<a href='{$data['qq']}'>点击进行qq咨询</a>";
                 }
                 $this->respondText($res);
