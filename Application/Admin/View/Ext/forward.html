@@ -1,0 +1,79 @@
+<extend name="Public/base" />
+<block name="content">
+<div class="am-article">
+  <form class="am-form" method="post">
+    <fieldset>
+      <legend>{$title}</legend>
+      <input type="hidden" id="ordernum" value="{$forward.ordernum}">
+      <div class="am-form-group">
+        <label for="name">功能名称</label> <input type="text" id="name" value="{$forward.name}"
+          required>
+      </div>
+      <div class="am-form-group">
+        <label for="keyword">关键词</label><span class="am-text-sm">（多关键词用中文逗号隔开）</span> <input
+          type="text" id="keyword" value="{$forward.keyword}" required>
+      </div>
+      <div class="am-form-group">
+        <label for="mode">匹配模式</label> <select id="mode">
+          <option value="0">完全匹配</option>
+          <option value="1">模糊匹配</option>
+        </select>
+      </div>
+      <div class="am-form-group">
+        <label for="url">url</label> <input type="text" id="url" value="{$forward.url}" required
+          pattern='http://.+'>
+      </div>
+      <div class="am-form-group">
+        <label for="token">token</label> <input type="text" id="token" value="{$forward.token}"
+          minlength='3' maxlength='32' required>
+      </div>
+      <input type="submit" class="am-btn" id="submit_form" value="提交">
+    </fieldset>
+  </form>
+</div>
+</block>
+<block name="javascript">
+<script>
+  $(function() {
+    $("#mode").val({$forward.mode});
+    $('select').selected();
+    $("form").submit(function(e) {
+      msg_show('检测url中，请稍候...');
+      $.AMUI.progress.start();
+      $.ajax({
+        'url' : $("#url").val(),
+        'type' : 'GET',
+        'dataType' : 'JSONP',
+        'timeout' : 1000,
+        'complete' : function(response) {
+          if (response.status != 200) {
+            $.AMUI.progress.done();
+            msg_show('url不可访问，请检查！');
+          } else {
+            $.post("{$saveUrl}", {
+              'keyword' : $("#keyword").val(),
+              'name' : $("#name").val(),
+              'url' : $("#url").val(),
+              'mode' : $("#mode").val(),
+              'ordernum' : $("#ordernum").val(),
+              'token' : $("#token").val()
+            }, function(msg) {
+              $.AMUI.progress.done();
+              msg_show(msg);
+              if (msg == "保存成功！") {
+                location.href='{$listUrl}';
+              }
+            });
+          }
+        }
+      });
+      return false;
+    });
+  });
+  function msg_show(msg){
+		$("#msg").html(msg);
+		$("#msg").show();
+		$("#msg").delay(2000).hide(0);
+	}
+</script>
+</block>

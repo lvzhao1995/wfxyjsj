@@ -5,8 +5,8 @@
     <fieldset>
       <legend>{$title}</legend>
       <div class='am-form-group'>
-        <label for="title">标题</label><span class="am-text-sm">（选填）</span> <input id="title"
-          type="text" value="{$tuwen.title}">
+        <label for="title">标题</label>
+          <input id="title" type="text" value="{$tuwen.title}" required>
       </div>
       <div class='am-form-group'>
         <label>封面</label><span class="am-text-sm">(建议尺寸：900像素*500像素，可不用)</span>
@@ -21,9 +21,10 @@
         <textarea rows="5" id='abstract' maxlength='120' placeholder='选填，最多120个字符' id="abstract">{$tuwen.abstract}</textarea>
       </div>
       <div class='am-form-group'>
-        <label for="url">URL</label><span class="am-text-sm">（选填）</span> <input id="url" type="text"
+        <label for="url">URL</label>
+         <input id="url" type="text"
           placeholder='http://开头，可使用[openid]，回复时会替换为用户openid' pattern='http://.+' maxlength='1000'
-          value="{$tuwen.url}">
+          value="{$tuwen.url}" required>
       </div>
       <div class="am-form-group">
         <input value="保存" class="am-btn am-btn-default am-center" type="submit">

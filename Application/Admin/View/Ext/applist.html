@@ -1,0 +1,27 @@
+<extend name="Public/base"/>
+<block name="content">
+<div class="am-article">
+<eq name="status" value="0">
+	<table class="am-table am-table-bordered am-table-hover">
+		<thead>
+			<tr class="am-text-nowrap">
+				<th>应用名</th>
+				<th>关键词</th>
+				<th>匹配规则</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+<foreach name="app" item="v">
+        <tr><td>{$v.appname}</td>
+        <td>{$v.keyword}</td><td>{$v['mode'] ? '模糊匹配' : '完全匹配'}
+        </td>
+        <td><a href="{$editUrl}?ordernum={$v.ordernum}">编辑</a>
+    </foreach>
+		</tbody>
+	</table>
+<else />
+    <p>暂无应用</p>
+</eq>
+</div>
+</block>

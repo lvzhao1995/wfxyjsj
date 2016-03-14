@@ -1,0 +1,73 @@
+<extend name="Public/base" /> <block name="content">
+<eq name="status" value="1">
+<div class="am-modal am-modal-alert" tabindex="-1" id="manage-alert">
+        <div class="am-modal-dialog"><div class="am-modal-hd"></div>
+        <div class="am-modal-bd">请先填写公众号设置 </div>
+        <div class="am-modal-footer"><span class="am-modal-btn" data-am-modal-confirm>确定
+        </span></div></div></div>
+        <else />
+<div class="am-article">
+  <form method="post" class="am-form">
+    <fieldset>
+      <legend>{$title}</legend>
+      <div class="am-form-group">
+        <label for="time">开学时间</label> <input type="text" id="time" readonly
+          style="cursor: default;" placeholder="点击选择日期"
+          value="{$starttime?date('Y-m-d',$starttime):''}">
+      </div>
+      <div class="am-form-group">
+        <input type="submit" value="保存" class="am-btn am-btn-success"> <input type="button"
+          value="刷新课表" class="am-btn am-btn-default" id="clear">
+      </div>
+    </fieldset>
+  </form>
+  <div class="am-panel am-panel-default">
+    <div class="am-panel-bd">
+      <ol>
+        <li>填写开学时间可以计算当前周数，判断是否开学等，如果不填写将无法使用</li>
+        <li>刷新课表一般情况下在每学期教务处放出课表后使用一次即可</li>
+        <li>刷新课表会清楚当前数据库中所用用户课表并重新从教务处获取，如果有更改密码会导致课表获取失败，请谨慎操作</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</eq>
+</block> <block name="javascript"> <script>
+  $(function() {
+    $("#time").datepicker();
+    $("form").submit(function() {
+      if ($("#time").val() == '') {
+        msg_show('请选择日期！');
+      } else {
+        $.AMUI.progress.start();
+        $.post('{$setUrl}', {
+          'starttime' : $("#time").val()
+        }, function(msg) {
+          $.AMUI.progress.done();
+          msg_show(msg);
+        });
+      }
+      return false;
+    });
+    $("#clear").click(function() {
+      if (window.confirm("真的要刷新课表吗？")) {
+        $.AMUI.progress.start();
+        $.post('{$setUrl}', {
+          act : 'clear'
+        }, function(msg) {
+          $.AMUI.progress.done();
+          msg_show(msg);
+        });
+      }
+    });
+  });
+  function msg_show(msg) {
+    $("#msg").html(msg);
+    $("#msg").show();
+    $("#msg").delay(2000).hide(0);
+  }
+  $("#manage-alert").modal({
+    closeViaDimmer:false,
+    onConfirm:function(){
+    location.href='{$manageUrl}'}});
+</script> </block>

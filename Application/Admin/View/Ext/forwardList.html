@@ -1,0 +1,155 @@
+<extend name="Public/base" />
+<block name="content">
+<div class="am-article">
+  <div class="am-tabs" id="tabs">
+    <ul class="am-tabs-nav am-nav am-nav-tabs">
+      <li class="am-active"><a href="#tab1">第三方融合</a></li>
+      <li><a href="#tab2" id="tab2click">关键词全转发</a></li>
+    </ul>
+    <div class="am-tabs-bd">
+      <div class="am-tab-panel am-fade am-in am-active" id="tab1">
+        <a href="{$addUrl}" style="margin-bottom: 10px" class="am-btn am-btn-secondary am-fr">添加融合功能</a>
+        <p>关键词优先级为：关键词自动回复>扩展应用>第三方融合>关键词全转发</p>
+        <eq name="status" value="0">
+        <table class="am-table am-table-bordered am-table-hover">
+          <thead>
+            <tr class="am-text-nowrap">
+              <th>功能名称</th>
+              <th>关键词</th>
+              <th>匹配规则</th>
+              <th>服务器地址</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <foreach name="forward" item="v">
+            <tr>
+              <td>{$v.name}</td>
+              <td>{$v.keyword}</td>
+              <td>{$v['mode'] ? '模糊匹配' : '完全匹配'}</td>
+              <td style="word-break: break-all;">{$v.url}</td>
+              <td><a href="{$editUrl}?ordernum={$v.ordernum}">编辑</a> <a
+                href="javascript:void(0)" onclick="deletekey(this)"
+                url="{$delUrl}?ordernum={$v.ordernum}">删除</a></td>
+            </tr>
+            </foreach>
+          </tbody>
+        </table>
+        <else />
+        <p>暂无第三方融合</p>
+        </eq>
+      </div>
+      <div class="am-tab-panel am-fade" id="tab2">
+        <form method="post" class="am-form">
+          <div class="am-form-group">
+            <p>
+              启用关键词全转发 <span class="am-icon-toggle-off am-icon-md"
+                style="color: #0e90d2; cursor: pointer" id="checkall" tag='0'></span>
+            </p>
+          </div>
+          <div class="am-form-group">
+            <label for="url">URL</label> <input type="text" id="url" disabled required
+              pattern='http://.+' placeholder="http://">
+          </div>
+          <div class="am-form-group">
+            <label for="token">TOKEN</label><input type="text" id="token" disabled required
+              minlength='3' maxlength='32'>
+          </div>
+          <div class="am-form-group">
+            <input value="提交" type="submit" id="form_submit" class="am-btn am-btn-default" disabled>
+          </div>
+        </form>
+        <p>启用后，“消息自动回复”设置失效</p>
+      </div>
+    </div>
+  </div>
+</div>
+</block>
+<block name="javascript"> <script>
+  $(function() {
+    $('#tabs').tabs({
+      noSwipe : 1
+    });
+    $('#checkall').click(
+        function(e) {
+          if ($('#checkall').attr('tag') == '1') {
+            if (window.confirm("确定关闭关键词全转发吗？操作立即生效！")) {
+              $.AMUI.progress.start();
+              $.get('{$delUrl}?ordernum=-1', function(msg) {
+                $.AMUI.progress.done();
+                msg_show(msg);
+              });
+            } else {
+              return false;
+            }
+            $("#url,#token,#form_submit").attr("disabled", true);
+            $('#checkall').removeClass('am-icon-toggle-on').addClass(
+                'am-icon-toggle-off').attr('tag', '0');
+            $("#url,#token").val('');
+          } else {
+            $("#url,#token,#form_submit").attr("disabled", false);
+            $('#checkall').addClass('am-icon-toggle-on').removeClass(
+                'am-icon-toggle-off').attr('tag', '1');
+          }
+        });
+    $('#tab2click').click(
+        function() {
+          $.AMUI.progress.start();
+          $.get('{$getForwardAll}', function(data) {
+            $.AMUI.progress.done();
+            if (data.check) {
+              $('#checkall').addClass('am-icon-toggle-on').removeClass(
+                  'am-icon-toggle-off').attr('tag', '1');
+              $("#url,#token,#form_submit").attr("disabled", false);
+              $("#url").val(data.url);
+              $("#token").val(data.token);
+            }
+          });
+        });
+    $('form').submit(function() {
+      msg_show('检测url中，请稍候...');
+      $.AMUI.progress.start();
+      $.ajax({
+        'url' : $("#url").val(),
+        'type' : 'GET',
+        'dataType' : 'JSONP',
+        'timeout' : 1000,
+        'complete' : function(response) {
+          if (response.status != 200) {
+            $.AMUI.progress.done();
+            msg_show('url不可访问，请检查！');
+          } else {
+            $.post('{$saveUrl}', {
+              'url' : $("#url").val(),
+              'token' : $("#token").val(),
+              'ordernum':-1
+            }, function(msg) {
+              $.AMUI.progress.done();
+              msg_show(msg);
+            });
+          }
+        }
+      });
+      return false;
+    });
+  });
+  function deletekey(e) {
+    if (window.confirm("确定要删除这条规则吗？")) {
+      $.AMUI.progress.start();
+      $.get($(e).attr("url"), function(msg) {
+        $.AMUI.progress.done();
+        msg_show(msg);
+        if ($("#msg").html() == "删除成功！") {
+          $(e).closest("tr").remove();
+        }
+      });
+    } else {
+      return false;
+    }
+  }
+  function msg_show(msg){
+		$("#msg").html(msg);
+		$("#msg").show();
+		$("#msg").delay(2000).hide(0);
+	}
+</script> </block>

@@ -1,0 +1,72 @@
+<extend name="Public/base"/>
+<block name="content">
+<div class="am-article">
+	<form class="am-form" action="#" method="post">
+		<fieldset>
+			<legend>{$title}</legend>
+			<input type="hidden" id="ordernum" value="{$app.ordernum}">
+			<div class="am-form-group">
+				<label for="appname">应用名</label> <input type="text" id="appname"
+					value="{$app.appname}" required>
+			</div>
+			<div class="am-form-group">
+				<label for="keyword">关键词</label> <input type="text" id="keyword"
+					value="{$app.keyword}" required placeholder="多关键词用中文逗号隔开">
+			</div>
+			<div class="am-form-group">
+				<label for="mode">匹配模式</label> <select id="mode">
+					<option value="0">完全匹配</option>
+					<option value="1">模糊匹配</option>
+				</select>
+			</div>
+			<div class="am-form-group">
+				<label class="am-checkbox"> <input type="checkbox" id="unsubscribe">转发取消订阅事件
+				</label>
+			</div>
+			<input type="submit" class="am-btn am-btn-default" value="保存">
+		</fieldset>
+	</form>
+</div>
+</block>
+<block name="javascript">
+<script>
+$(function(){
+	$("input[type='checkbox'], input[type='radio']").uCheck();
+	$("#mode").val({$app.mode});
+	$('select').selected();
+	$("form").submit(function(){
+			var post_data={
+					'appname':$("#appname").val(),
+					'keyword':$("#keyword").val(),
+					'mode':$("#mode").val(),
+					'ordernum':$("#ordernum").val()
+			};
+			if($("#unsubscribe").is(":checked")){
+				post_data.unsubscribe='1';
+			}else{
+				post_data.unsubscribe='0';
+			}
+			$.AMUI.progress.start();
+			$.post("{$saveUrl}",post_data,function(msg){
+				$.AMUI.progress.done();
+				msg_show(msg);
+				if(msg=="保存成功！"){
+					setTimeout(function() {
+						location.href='{$listUrl}'
+					}, 2000);
+				}
+			});
+		
+		return false;
+	});
+	if({$app.unsubscribe}){
+		$("#unsubscribe").uCheck('check');
+	}
+});
+	function msg_show(msg){
+		$("#msg").html(msg);
+		$("#msg").show();
+		$("#msg").delay(2000).hide(0);
+	}
+</script>
+</block>

@@ -164,10 +164,10 @@ class BaseController extends PublicController
         ))
             ->bind(':id', $id)
             ->delete();
-        if ($res === true) {
-            echo '删除成功！';
-        } else {
+        if ($res === false) {
             echo '未知错误，请刷新后重试！';
+        } else {
+            echo '删除成功！';
         }
     }
 
@@ -175,7 +175,7 @@ class BaseController extends PublicController
     {
         $resdata = array();
         $resdata['code'] = 1;
-        if (isset($_POST['title'])) {
+        if (I('post.title/s')!='') {
             $imgurl = I('post.imgurl');
             $id = I('post.id');
             if (false === strpos($imgurl, 'http') && ! empty($imgurl)) {
@@ -197,7 +197,7 @@ class BaseController extends PublicController
                 $resdata['msg'] = '保存成功！';
             }
         } else {
-            $resdata['msg'] = '参数错误！';
+            $resdata['msg'] = '标题不能为空！';
         }
         $this->ajaxReturn($resdata);
     }
@@ -236,10 +236,7 @@ class BaseController extends PublicController
     {
         if (isset($_POST['ordernum'])) {
             $ordernum = I('post.ordernum/d');
-            $replytype = I('post.replytype/d');
-            $content = I('post.content', '', '');
             $keyword = I('post.keyword');
-            $mode = I('post.mode/d');
             $keyword = explode('，', trim($keyword, '，'));
             $keyword = array_unique($keyword);
             $keyword = array_filter($keyword);
@@ -266,86 +263,14 @@ class BaseController extends PublicController
                 $ordernum = $data['ordernum'] + 1;
             }
             foreach ($keyword as $v) {
-                $data = array(
-                    'ordernum' => $ordernum,
-                    'replytype' => $replytype,
-                    'mode' => $mode,
-                    'keyword' => $v,
-                    'content' => $content
-                );
-                $db->data($data)->add();
+                $db->create();
+                $db->keyword=$v;
+                $db->ordernum=$ordernum;
+                $db->add();
             }
             echo '保存成功！';
         } else {
             echo '未知错误！请检查数据后重试！';
-        }
-    }
-
-    public function valiteKeyword($keyword, $type, $ordernum)
-    {
-        $where1 = array(
-            'keyword' => array(
-                'in',
-                $keyword
-            )
-        );
-        $where2 = array(
-            'keyword' => array(
-                'in',
-                $keyword
-            ),
-            'ordernum' => array(
-                'neq',
-                ':ordernum'
-            )
-        );
-        $reply = M('reply');
-        $app = M('app');
-        $forward = M('forward');
-        if ($type == 'reply') {
-            $data1 = $reply->field('keyword')
-                ->where($where2)
-                ->bind(':ordernum', $ordernum)
-                ->find();
-            $data2 = $app->field('keyword')
-                ->where($where1)
-                ->bind(':ordernum', $ordernum)
-                ->find();
-            $data3 = $forward->field('keyword')
-                ->where($where1)
-                ->bind(':ordernum', $ordernum)
-                ->find();
-        } elseif ($type == 'app') {
-            $data1 = $reply->field('keyword')
-                ->where($where1)
-                ->bind(':ordernum', $ordernum)
-                ->find();
-            $data2 = $app->field('keyword')
-                ->where($where2)
-                ->bind(':ordernum', $ordernum)
-                ->find();
-            $data3 = $forward->field('keyword')
-                ->where($where1)
-                ->bind(':ordernum', $ordernum)
-                ->find();
-        } elseif ($type == 'reply') {
-            $data1 = $reply->field('keyword')
-                ->where($where1)
-                ->bind(':ordernum', $ordernum)
-                ->find();
-            $data2 = $app->field('keyword')
-                ->where($where1)
-                ->bind(':ordernum', $ordernum)
-                ->find();
-            $data3 = $forward->field('keyword')
-                ->where($where2)
-                ->bind(':ordernum', $ordernum)
-                ->find();
-        }
-        if (! (empty($data1) && empty($data2) && empty($data3))) {
-            return $data1['keyword'] . $data2['keyword'] . $data3['keyword'];
-        } else {
-            return true;
         }
     }
 

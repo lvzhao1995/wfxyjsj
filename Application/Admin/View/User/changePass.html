@@ -1,0 +1,62 @@
+<extend name="Public/base" />
+<block name="content">
+<div class="am-article">
+	<form method="post"	class="am-form am-form-horizontal">
+		<legend>修改密码</legend>
+		<div class="am-form-group">
+			<label class="am-u-sm-2 am-form-label">用户名</label>
+			<div class="am-u-sm-10">
+				<input id="username" type="text" disabled
+					value="{$user}">
+			</div>
+		</div>
+		<div class="am-form-group">
+			<label for="pass" class="am-u-sm-2 am-form-label">原密码</label>
+			<div class="am-u-sm-10">
+				<input id="pass" type="password" required>
+			</div>
+		</div>
+		<div class="am-form-group">
+			<label for="newpass" class="am-u-sm-2 am-form-label">新密码</label>
+			<div class="am-u-sm-10">
+				<input id="newpass" type="password" required>
+			</div>
+		</div>
+		<div class="am-form-group">
+			<label for="repass" class="am-u-sm-2 am-form-label">重复密码</label>
+			<div class="am-u-sm-10">
+				<input id="repass" type="password" required data-equal-to="#newpass">
+			</div>
+		</div>
+		<div class="am-u-sm-10 am-u-sm-offset-2">
+			<input type="submit" class="am-btn am-btn-default" value="确定修改">
+		</div>
+	</form>
+</div>
+</block>
+<block name="javascript">
+<script>
+$(function() {
+	  $('#changepass').validator();
+	  $("form").submit(function(){
+		  $.AMUI.progress.start();
+			$.post("#",{
+				'username':$("#username").val(),
+				'pass':$("#pass").val(),
+			    'newpass':$("#newpass").val(),
+			    'repass':$("#repass").val()
+			},function(msg){
+				$.AMUI.progress.done();
+				msg_show(msg);
+			});
+			return false;
+		});
+});
+function msg_show(msg){
+	$("#msg").html(msg);
+	$("#msg").show();
+	$("#msg").delay(2000).hide(0);
+}
+
+</script>
+</block>
