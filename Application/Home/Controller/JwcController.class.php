@@ -255,7 +255,7 @@ class JwcController extends Controller
                 $cookie = R('Home/Info/getJwcCookie', array($openid));
                 if ($cookie == 404) {
                     return $cookie;
-                } elseif ($cookie) {
+                } elseif ($cookie!=403) {
                     $kecheng = $this->readKecheng($cookie, $data['studentid']);
                     $data['kecheng_json'] = $this->analyse($kecheng[1]);
                     $data['openid'] = $openid;
