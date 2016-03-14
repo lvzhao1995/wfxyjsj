@@ -93,6 +93,12 @@ class ExtController extends PublicController
             }
             $db = M('app');
             
+            $cn=$db->field('classname')
+                ->where(array('ordernum' => ':ordernum'
+            ))
+                ->bind(':ordernum', $ordernum)
+                ->find();
+            
             $db->where(array('ordernum' => ':ordernum'
             ))
                 ->bind(':ordernum', $ordernum)
@@ -101,6 +107,7 @@ class ExtController extends PublicController
             foreach ($keyword as $v) {
                 $db->create();
                 $db->keyword = $v;
+                $db->classname=$cn['classname'];
                 $db->add();
             }
             echo '保存成功！';
@@ -204,8 +211,9 @@ class ExtController extends PublicController
                     echo '关键词“', $valite, '”已经存在';
                     return;
                 }
-            }else{
-                $keyword=array('');
+            } else {
+                $keyword = array(''
+                );
             }
             $db = M('forward');
             if ($ordernum != '0') {
@@ -266,36 +274,40 @@ class ExtController extends PublicController
         }
         $this->ajaxReturn($resdata);
     }
-    
-    public function kebiao(){
-        $db=M('manage');
-        $data=$db->field('starttime')->find();
-        if(empty($data)) {
-            $status=1;
-        }else{
-            $status=0;
+
+    public function kebiao()
+    {
+        $db = M('manage');
+        $data = $db->field('starttime')->find();
+        if (empty($data)) {
+            $status = 1;
+        } else {
+            $status = 0;
         }
         
-        $this->starttime=$data['starttime'];
-        $this->status=$status;
-        $this->title="课表设置";
-        $this->manageUrl=U('User/manage');
-        $this->setUrl=U('Ext/setKebiao');
+        $this->starttime = $data['starttime'];
+        $this->status = $status;
+        $this->title = "课表设置";
+        $this->manageUrl = U('User/manage');
+        $this->setUrl = U('Ext/setKebiao');
         $this->display();
     }
-    
-    public function setKebiao(){
-        $act=I('post.act');
-        if(isset($_POST['starttime'])){
-            $starttime=I('post.starttime','','strtotime');
-            $db=M('manage');
-            $db->where('1')->save(array('starttime'=>$starttime));
+
+    public function setKebiao()
+    {
+        $act = I('post.act');
+        if (isset($_POST['starttime'])) {
+            $starttime = I('post.starttime', '', 'strtotime');
+            $db = M('manage');
+            $db->where('1')->save(array('starttime' => $starttime
+            ));
             echo '保存成功！';
-        }elseif($act=='clear'){
-            $db=M('info');
-            $db->where(1)->save(array('kecheng_json'=>null));
+        } elseif ($act == 'clear') {
+            $db = M('info');
+            $db->where(1)->save(array('kecheng_json' => null
+            ));
             echo '刷新成功！';
-        }else{
+        } else {
             echo '参数错误，请刷新后重试';
         }
     }
