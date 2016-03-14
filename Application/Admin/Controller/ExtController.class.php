@@ -82,10 +82,7 @@ class ExtController extends PublicController
     {
         $ordernum = I('post.ordernum/d');
         if ($ordernum != 0) {
-            $appname = $_POST['appname'];
-            $keyword = $_POST['keyword'];
-            $mode = $_POST['mode'];
-            $unsubscribe = $_POST['unsubscribe'];
+            $keyword = I('post.keyword');
             $keyword = explode('，', trim($keyword, '，'));
             $keyword = array_unique($keyword);
             $keyword = array_filter($keyword);
