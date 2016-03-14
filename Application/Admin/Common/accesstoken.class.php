@@ -11,8 +11,8 @@ class accesstoken
     {
         $db=M('manage');
         $data=$db->field('appid,appsecret')->find();
-        $this->appId = $data['appId'];
-        $this->appSecret = $data['appSecret'];
+        $this->appId = $data['appid'];
+        $this->appSecret = $data['appsecret'];
     }
     public function getAccessToken()
     {

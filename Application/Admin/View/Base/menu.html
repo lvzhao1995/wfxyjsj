@@ -1,54 +1,53 @@
 <extend name="Public/base" />
-<block name="content">
-<empty name="data">
-    <div class="am-modal am-modal-alert" tabindex="-1" id="manage-alert">
-        <div class="am-modal-dialog"><div class="am-modal-hd"></div>
-        <div class="am-modal-bd">请先填写公众号设置项 </div>
-        <div class="am-modal-footer"><span class="am-modal-btn" data-am-modal-confirm>确定
-        </span></div></div></div>
-   
-</empty>
-<eq name="data.type" value="0">
-    <div class="am-modal am-modal-alert" tabindex="-1" id="manage-alert">
-        <div class="am-modal-dialog"><div class="am-modal-hd"></div>
-        <div class="am-modal-bd">未认证订阅号不能设置自定义菜单！</div>
-        <div class="am-modal-footer"><span class="am-modal-btn" data-am-modal-confirm>确定
-        </span></div></div></div>
+<block name="content"> <empty name="data">
+<div class="am-modal am-modal-alert" tabindex="-1" id="manage-alert">
+  <div class="am-modal-dialog">
+    <div class="am-modal-hd"></div>
+    <div class="am-modal-bd">请先填写公众号设置项</div>
+    <div class="am-modal-footer">
+      <span class="am-modal-btn" data-am-modal-confirm>确定 </span>
+    </div>
+  </div>
+</div>
+</empty> <eq name="data.type" value="0">
+<div class="am-modal am-modal-alert" tabindex="-1" id="manage-alert">
+  <div class="am-modal-dialog">
+    <div class="am-modal-hd"></div>
+    <div class="am-modal-bd">未认证订阅号不能设置自定义菜单！</div>
+    <div class="am-modal-footer">
+      <span class="am-modal-btn" data-am-modal-confirm>确定 </span>
+    </div>
+  </div>
+</div>
 </eq>
-
 <link rel="stylesheet" href="/{$Think.config.install_path}/Public/list.css">
 <div class="am-container">
-	<span>本页菜单为临时保存，离开页面前请点击“发布”使菜单生效</span>
-	<div class="am-fr">
-		<button class="am-btn am-btn-default" id="publish_menu">发布</button>
-	</div>
-	<div class="am-fr">
-		<button class="am-btn am-btn-default" id="del_menu">删除菜单</button>
-	</div>
-
+  <span>本页菜单为临时保存，离开页面前请点击“发布”使菜单生效</span>
+  <div class="am-fr">
+    <button class="am-btn am-btn-default" id="publish_menu">发布</button>
+  </div>
+  <div class="am-fr">
+    <button class="am-btn am-btn-default" id="del_menu">删除菜单</button>
+  </div>
 </div>
 <hr>
 <div class="am-container">
-	<button class="am-btn am-btn-default" id="add_button">添加一级菜单</button>
+  <button class="am-btn am-btn-default" id="add_button">添加一级菜单</button>
 </div>
 <div class="am-u-sm-5">
-	&nbsp;
-	<div class="dd" id="nestable">
-		<ol class="dd-list">
-<foreach name="menu" item="button">
-<present name="button.type">
-            <li data-type="{$button.type}" data-name="{$button.name}"
-            <present name="button.key"> 
-                data-key="{$button.key}" 
-            <else />
-                data-key="{$button.url}"
-            </present>
-            class="dd-item"><div class="dd-handle"></div><div class="dd-content">
-            <span class="changename">{$button.name}
-            </span><span class="am-icon-close am-icon-sm am-fr"></span>
-            <span class="am-icon-plus am-fr am-icon-sm"></span></div>
-            <else />
-            <li data-name="{$button.name}" class="dd-item">
+  &nbsp;
+  <div class="dd" id="nestable">
+    <ol class="dd-list">
+      <foreach name="menu" item="button"> <present name="button.type">
+      <li data-type="{$button.type}" data-name="{$button.name}"<present
+          name="button.key"> data-key="{$button.key}" <else /> data-key="{$button.url}" </present>
+        class="dd-item">
+        <div class="dd-handle"></div>
+        <div class="dd-content">
+          <span class="changename">{$button.name} </span><span
+            class="am-icon-close am-icon-sm am-fr"></span> <span
+            class="am-icon-plus am-fr am-icon-sm"></span>
+        </div> <else /><li data-name="{$button.name}" class="dd-item">
             <div class="dd-handle"></div><div class="dd-content"><span class="changename">{$button.name}
             </span><span class="am-icon-close am-icon-sm am-fr"></span>
             <span class="am-icon-plus am-fr am-icon-sm"></span></div>
@@ -65,211 +64,229 @@
                 </span><span class="am-icon-close am-icon-sm am-fr"></span></div>';
             </li>
             </ol>
-        </present>
-        </li>
-    </foreach>
-		</ol>
-	</div>
+        
+      </present>
+      </li>
+      </foreach>
+    </ol>
+  </div>
 </div>
 <div class="am-u-sm-7" id="setmenu">
-	<br>
-	<ol class="am-text-lg">
-		<li>点击左上方按钮添加一级菜单</li>
-		<li>点击菜单按钮设置显示文字及响应动作</li>
-		<li>点击菜单前部按钮可拖动排序</li>
-		<li>微信对于公众号自定义菜单有一定缓存时间，发布菜单后如果想及时看到菜单修改，可以取消关注再重新关注公众号快速地看到新菜单。</li>
-	</ol>
-	<form method="post" class="am-form" style="display: none">
-		<div class="am-form-group">
-			<label for="menu_name">菜单名称</label><input id="menu_name" type="text"
-				maxlength="7" placeholder="一级菜单最多4个汉字，二级菜单最多7个汉字" required>
-		</div>
-		<div class="am-form-group">
-			<label for="type">响应方式</label> <select id="type">
-				<option value="click">模拟关键词</option>
-				<option value="view">打开链接</option>
-			</select>
-		</div>
-		<div class="am-form-group">
-			<label for="key">关键词</label> <input type="text" id="key"
-				placeholder="仅支持单关键词，用户点击与输入关键词效果一致">
-		</div>
-		<div class="am-form-group">
-			<label for="url">请输入网址</label><input type="text" id="url"
-				placeholder="用户点击直接打开此链接,http://" pattern="http://.+">
-		</div>
-		<p>已有子菜单，不能设置响应动作</p>
-
-		<input type="submit" value="提交" class="am-btn am-btn-default">
-
+  <br>
+  <ol class="am-text-lg">
+    <li>点击左上方按钮添加一级菜单</li>
+    <li>点击菜单按钮设置显示文字及响应动作</li>
+    <li>点击菜单前部按钮可拖动排序</li>
+    <li>微信对于公众号自定义菜单有一定缓存时间，发布菜单后如果想及时看到菜单修改，可以取消关注再重新关注公众号快速地看到新菜单。</li>
+  </ol>
+  <form method="post" class="am-form" style="display: none">
+    <div class="am-form-group">
+      <label for="menu_name">菜单名称</label><input id="menu_name" type="text" maxlength="7"
+        placeholder="一级菜单最多4个汉字，二级菜单最多7个汉字" required>
+    </div>
+    <div class="am-form-group">
+      <label for="type">响应方式</label> <select id="type">
+        <option value="click">模拟关键词</option>
+        <option value="view">打开链接</option>
+      </select>
+    </div>
+    <div class="am-form-group">
+      <label for="key">关键词</label> <input type="text" id="key" placeholder="仅支持单关键词，用户点击与输入关键词效果一致">
+    </div>
+    <div class="am-form-group">
+      <label for="url">请输入网址</label><input type="text" id="url" placeholder="用户点击直接打开此链接,http://"
+        pattern="http://.+">
+    </div>
+    <p>已有子菜单，不能设置响应动作</p>
+    <input type="submit" value="提交" class="am-btn am-btn-default">
 </div>
 </form>
 </div>
 </block>
-<block name="javascript">
-<script src="/{$Think.config.install_path}/Public/jquery.nestable.js"></script>
-<script>
-$(function()
-{
-    $('#nestable').nestable({
-        allowx:true,maxDepth:2,offx:28,childrenName:'sub_button'
-    });//拖动初始化
-    $("#add_button").click(function(){
-        if($("#nestable>ol").children("li").size()<3){
-            var content='<div class="dd-handle"></div><div class="dd-content"><span class="changename">点击设置';
-            content+='</span><span class="am-icon-plus am-icon-sm am-fr">';
-            content+='<span class="am-icon-close am-fr am-icon-sm"></span></div>';
-            var item=$('<li></li>').append(content).addClass("dd-item").attr("data-name","");
-            $("#nestable>ol").append(item);
-        }else{
-            msg_show("菜单数量已达上限！");
-        }
-    });//添加一级菜单
-    $("#nestable").on("click",".changename",function(e){
-        $(".menu_live").removeClass("menu_live");
-        var button=$(this).closest("li");
-        $("#menu_name").val(button.attr("data-name"));
-        $("#type").val(button.attr("data-type")||'click');
-        if(button.find("li").size()>0){
-        	$("#key").closest("div").hide();
+<block name="javascript"> <script
+  src="/{$Think.config.install_path}/Public/jquery.nestable.js"></script> <script>
+      $(function() {
+        $('#nestable').nestable({
+          allowx : true,
+          maxDepth : 2,
+          offx : 28,
+          childrenName : 'sub_button'
+        });//拖动初始化
+        $("#add_button")
+            .click(
+                function() {
+                  if ($("#nestable>ol").children("li").size() < 3) {
+                    var content = '<div class="dd-handle"></div><div class="dd-content"><span class="changename">点击设置';
+                    content += '</span><span class="am-icon-plus am-icon-sm am-fr">';
+                    content += '<span class="am-icon-close am-fr am-icon-sm"></span></div>';
+                    var item = $('<li></li>').append(content).addClass(
+                        "dd-item").attr("data-name", "");
+                    $("#nestable>ol").append(item);
+                  } else {
+                    msg_show("菜单数量已达上限！");
+                  }
+                });//添加一级菜单
+        $("#nestable").on("click", ".changename", function(e) {
+          $(".menu_live").removeClass("menu_live");
+          var button = $(this).closest("li");
+          $("#menu_name").val(button.attr("data-name"));
+          $("#type").val(button.attr("data-type") || 'click');
+          if (button.find("li").size() > 0) {
+            $("#key").closest("div").hide();
             $("#url").closest("div").hide();
             $("#type").closest("div").hide();
             $("form>p").show();
-        }else{
+          } else {
             $("#key").val(button.attr("data-key"));
             $("#url").val(button.attr("data-url"));
             $("#type").closest("div").show();
             $("form>p").hide();
             $("#type").trigger("change");
-        }
-        button.addClass("menu_live");
-        $("#setmenu>ol").hide();
-        $("form").show();
-    });//显示设置菜单项表单
-    $("#nestable").on("click",".am-icon-close",function(e){
-        if($(this).closest("ol").find("li").size()==1&&$(this).closest("ol").closest("li").size()==1){
-        	$(this).closest("ol").remove();
-        }
-        $(this).closest("li").remove();
-    });//删除菜单项
-    $("#nestable").on("click",".am-icon-plus",function(e){
-        var list=$(this).closest("li");
-    	if(list.find("li").size()<5){
-            var content='<div class="dd-handle"></div><div class="dd-content"><span class="changename">点击设置';
-            content+='</span><span class="am-icon-close am-icon-sm am-fr"></div>';
-            var item=$('<li></li>').append(content).addClass("dd-item");
-            if(list.children("ol").size()==0){
-                list.append('<ol class="dd-list"></ol>');
-                list.removeAttr('data-type');
-                list.removeAttr('data-url');
-                list.removeAttr('data-key');
-            }
-            list.children("ol").append(item);
-        }else{
-            msg_show("菜单数量已达上限！");
-        }
-    });//添加二级菜单
-    $("#type").change(function(){
-        if($("#type").val()=='click'){
+          }
+          button.addClass("menu_live");
+          $("#setmenu>ol").hide();
+          $("form").show();
+        });//显示设置菜单项表单
+        $("#nestable").on(
+            "click",
+            ".am-icon-close",
+            function(e) {
+              if ($(this).closest("ol").find("li").size() == 1
+                  && $(this).closest("ol").closest("li").size() == 1) {
+                $(this).closest("ol").remove();
+              }
+              $(this).closest("li").remove();
+            });//删除菜单项
+        $("#nestable")
+            .on(
+                "click",
+                ".am-icon-plus",
+                function(e) {
+                  var list = $(this).closest("li");
+                  if (list.find("li").size() < 5) {
+                    var content = '<div class="dd-handle"></div><div class="dd-content"><span class="changename">点击设置';
+                    content += '</span><span class="am-icon-close am-icon-sm am-fr"></div>';
+                    var item = $('<li></li>').append(content).addClass(
+                        "dd-item");
+                    if (list.children("ol").size() == 0) {
+                      list.append('<ol class="dd-list"></ol>');
+                      list.removeAttr('data-type');
+                      list.removeAttr('data-url');
+                      list.removeAttr('data-key');
+                    }
+                    list.children("ol").append(item);
+                  } else {
+                    msg_show("菜单数量已达上限！");
+                  }
+                });//添加二级菜单
+        $("#type").change(function() {
+          if ($("#type").val() == 'click') {
             $("#key").closest("div").show();
             $("#url").closest("div").hide();
-        }else{
-        	$("#key").closest("div").hide();
+          } else {
+            $("#key").closest("div").hide();
             $("#url").closest("div").show();
+          }
+        });//设置响应动作类型
+        $("form").submit(
+            function() {
+              var button = $(".menu_live");
+              var attrlist = {
+                'data-name' : $("#menu_name").val()
+              };
+              var flag = 1;
+              if ($("form>p").is(":hidden")) {
+                attrlist['data-type'] = $("#type").val();
+                if ($("#type").val() == 'click') {
+                  attrlist['data-key'] = $("#key").val();
+                } else {
+                  attrlist['data-url'] = $("#url").val();
+                }
+                if (attrlist['data-key'] == '' || attrlist['data-url'] == '') {
+                  msg_show("未设置关键词或填写url，请检查");
+                  flag = 0;
+                }
+              }
+              if (flag == 1) {
+                button.children(".dd-content").children(".changename").html(
+                    $("#menu_name").val());
+                button.removeAttr('data-url');
+                button.removeAttr('data-key');
+                button.attr(attrlist);
+                msg_show('设置成功！离开页面前请点击“发布”按钮');
+              }
+              return false;
+            });//设置菜单项
+        $("#publish_menu").click(
+            function() {
+              var flag = 0, numflag = 0;
+              $.each($("#nestable").find("li"), function(n, value) {
+                if ($(value).attr("data-name") == undefined) {
+                  flag = 1
+                  return false;
+                }
+              });
+              $.each($("#nestable").children("ol").children("li"), function(n,
+                  value) {
+                if ($(value).find("li").size() == 0
+                    && $(value).attr('data-type') == undefined) {
+                  flag = 1
+                  return false;
+                }
+              });
+              $.each($("#nestable").children("ol").children("li"), function(n,
+                  value) {
+                if ($(value).find("li").size() > 5) {
+                  numflag = 1
+                  return false;
+                }
+              });
+              if ($("#nestable").children("ol").children("li").size() > 3) {
+                msg_show("一级菜单最多只能有3个！");
+              } else if (numflag == 1) {
+                msg_show("二级菜单最多只能有5个！");
+              } else if (flag == 1) {
+                msg_show("存在未设置的菜单项！请检查！");
+              } else if ($("#nestable").nestable('serialize').length == 0) {
+                $("#del_menu").trigger("click");
+              } else {
+                $.AMUI.progress.start();
+                $.post('{$setmenuUrl}', {
+                  'menu' : JSON.stringify($("#nestable").nestable('serialize'))
+                }, function(msg) {
+                  $.AMUI.progress.done();
+                  msg_show(msg);
+                  $("#menu_list").trigger("click");
+                });
+              }
+            });//发布菜单
+        $("#del_menu").click(function() {
+          if (window.confirm("确定要删除菜单吗？")) {
+            $.AMUI.progress.start();
+            $.post('{$setmenuUrl}', {
+              'act' : 'del'
+            }, function(msg) {
+              $.AMUI.progress.done();
+              msg_show(msg);
+              if (msg == "删除成功") {
+                $("#nestable>ol").html('');
+              }
+            });
+          } else {
+            return false;
+          }
+        });//删除菜单
+        function msg_show(msg) {
+          $("#msg").html(msg);
+          $("#msg").show();
+          $("#msg").delay(2000).hide(0);
         }
-    });//设置响应动作类型
-    $("form").submit(function(){
-        var button=$(".menu_live");
-        var attrlist={
-                'data-name':$("#menu_name").val()
-        };
-        var flag=1;
-        if($("form>p").is(":hidden")){
-        	attrlist['data-type']=$("#type").val();
-        	if($("#type").val()=='click'){
-                attrlist['data-key']=$("#key").val();
-            }else{
-                attrlist['data-url']=$("#url").val();
-            }
-        	if(attrlist['data-key']==''||attrlist['data-url']==''){
-                msg_show("未设置关键词或填写url，请检查");
-                flag=0;
-            }
-        }
-        if(flag==1){
-            button.children(".dd-content").children(".changename").html($("#menu_name").val());
-            button.removeAttr('data-url');
-            button.removeAttr('data-key');
-            button.attr(attrlist);
-            msg_show('设置成功！离开页面前请点击“发布”按钮');
-        }
-        return false;
-    });//设置菜单项
-    $("#publish_menu").click(function(){
-        var flag=0,numflag=0;
-    	$.each($("#nestable").find("li"),function(n,value){
-	    	if($(value).attr("data-name")==undefined){
-		    	flag=1
-		    	return false;
-	    	}
-    	});
-    	$.each($("#nestable").children("ol").children("li"),function(n,value){
-	    	if($(value).find("li").size()==0&&$(value).attr('data-type')==undefined){
-		    	flag=1
-		    	return false;
-	    	}
-    	});
-    	$.each($("#nestable").children("ol").children("li"),function(n,value){
-	    	if($(value).find("li").size()>5){
-		    	numflag=1
-		    	return false;
-	    	}
-    	});
-    	if($("#nestable").children("ol").children("li").size()>3){
-        	msg_show("一级菜单最多只能有3个！");
-    	}else if(numflag==1){
-    		msg_show("二级菜单最多只能有5个！");
-    	}else if(flag==1){
-        	msg_show("存在未设置的菜单项！请检查！");
-    	}else if($("#nestable").nestable('serialize').length==0){
-        	$("#del_menu").trigger("click");
-    	}else {
-    		$.AMUI.progress.start();
-        	$.post('{$setmenuUrl}',{
-            	'menu':JSON.stringify($("#nestable").nestable('serialize'))
-        	},function(msg){
-        		$.AMUI.progress.done();
-            	msg_show(msg);
-            	$("#menu_list").trigger("click");
-        	});
-    	}
-    });//发布菜单
-    $("#del_menu").click(function(){
-    	if(window.confirm("确定要删除菜单吗？")){
-    		$.AMUI.progress.start();
-    		$.post('{$setmenuUrl}',{
-        		'act':'del'
-    		},function(msg){
-    			$.AMUI.progress.done();
-        		msg_show(msg);
-        		if(msg=="删除成功"){
-            		$("#nestable>ol").html('');
-        		}
-    		});
-    	}else{
-    		return false;
-    	}
-    });//删除菜单
-    function msg_show(msg){
-		$("#msg").html(msg);
-		$("#msg").show();
-		$("#msg").delay(2000).hide(0);
-	}
-});
+      });
 
-$("#manage-alert").modal({
-closeViaDimmer:false,
-onConfirm:function(){
-	location.href='{$indexUrl}'}});
-</script>
-</block>
+      $("#manage-alert").modal({
+        closeViaDimmer : false,
+        onConfirm : function() {
+          location.href = '{$indexUrl}'
+        }
+      });
+    </script> </block>
