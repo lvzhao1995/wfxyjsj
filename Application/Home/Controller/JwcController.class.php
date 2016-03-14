@@ -14,7 +14,7 @@ class JwcController extends Controller
 
     public function _initialize()
     {
-        $this->selfurl = 'http://' . $_SERVER['HTTP_HOST'] ;
+        $this->selfurl = 'http://' . $_SERVER['HTTP_HOST'];
         $db = M('manage');
         $starttime = $db->field('starttime')->find();
         if (empty($starttime)) {
@@ -54,15 +54,10 @@ class JwcController extends Controller
             foreach ($_block[1] as $v) {
                 if ($flag) {
                     preg_match_all('/<td(.*?)>(.*?)<\/td>/ims', $v, $str_block);
-                    $redata[$flag] = array(
-                        'kecheng' => $str_block[2][0],
-                        'teacher' => $str_block[2][1],
-                        'jiaoshi' => $str_block[2][7],
-                        'date' => $str_block[2][6]
+                    $redata[$flag] = array('kecheng' => $str_block[2][0],'teacher' => $str_block[2][1],'jiaoshi' => $str_block[2][7],'date' => $str_block[2][6]
                     );
                 }
-                    $flag ++;
-                
+                $flag ++;
             }
         }
         return $redata;
@@ -110,16 +105,7 @@ class JwcController extends Controller
         $resData['xq'] = $xq;
         $url = $this->url . 'xscj.aspx?xh=' . $number;
         $hidden = $this->chengjiHidden($cookie, $number);
-        $post_data = array(
-            '__EVENTTARGET' => '',
-            '__EVENTARGUMENT' => '',
-            '__VIEWSTATE' => $hidden,
-            '__VIEWSTATEGENERATOR' => '8963BEEC',
-            'ddlXN' => $xn,
-            'ddlXQ' => $xq,
-            'txtQSCJ' => '0',
-            'txtZZCJ' => '100',
-            'Button1' => ''
+        $post_data = array('__EVENTTARGET' => '','__EVENTARGUMENT' => '','__VIEWSTATE' => $hidden,'__VIEWSTATEGENERATOR' => '8963BEEC','ddlXN' => $xn,'ddlXQ' => $xq,'txtQSCJ' => '0','txtZZCJ' => '100','Button1' => ''
         );
         $data = $this->visit_url($url, $cookie, $url, 0, $post_data);
         $block = array();
@@ -187,11 +173,7 @@ class JwcController extends Controller
     private function analyse($data)
     {
         $data = preg_replace('/<font.*?<\/font><br><br>/ims', '', $data);
-        $data = preg_replace(array(
-            '/<td[^>]*>上午<\/td>/',
-            '/<td[^>]*>下午<\/td>/',
-            '/<td[^>]*>晚上<\/td>/',
-            '/<td.*?节<\/td>/'
+        $data = preg_replace(array('/<td[^>]*>上午<\/td>/','/<td[^>]*>下午<\/td>/','/<td[^>]*>晚上<\/td>/','/<td.*?节<\/td>/'
         ), '', $data);
         $kecheng = array();
         if (preg_match_all('/<tr.*?<\/tr>/ims', $data, $kecheng)) {
@@ -236,26 +218,27 @@ class JwcController extends Controller
         $db = M('info');
         if ($kebiao) {
             $data = $db->field('studentid,kecheng_json')
-                ->where(array(
-                'openid' => ':openid'
+                ->where(array('openid' => ':openid'
             ))
                 ->bind(':openid', $openid)
                 ->find();
         } else {
             $data = $db->field('studentid')
-                ->where(array(
-                'openid' => ':openid'
+                ->where(array('openid' => ':openid'
             ))
                 ->bind(':openid', $openid)
                 ->find();
-            $data['kecheng_json']=1;
+            if (! empty($data)) {
+                $data['kecheng_json'] = 1;
+            }
         }
         if (! empty($data)) {
-            if (($data['kecheng_json'] == '' || $data['kecheng_json'] == 'null'||$data['kecheng_json'] == null)) {
-                $cookie = R('Home/Info/getJwcCookie', array($openid));
+            if (($data['kecheng_json'] == '' || $data['kecheng_json'] == 'null' || $data['kecheng_json'] == null)) {
+                $cookie = R('Home/Info/getJwcCookie', array($openid
+                ));
                 if ($cookie == 404) {
                     return $cookie;
-                } elseif ($cookie!=403) {
+                } elseif ($cookie != 403) {
                     $kecheng = $this->readKecheng($cookie, $data['studentid']);
                     $data['kecheng_json'] = $this->analyse($kecheng[1]);
                     $data['openid'] = $openid;
@@ -265,7 +248,7 @@ class JwcController extends Controller
                 }
             }
             $rs = array();
-            $rs['kecheng_json'] = isset($data['kecheng_json'])?$data['kecheng_json']:'';
+            $rs['kecheng_json'] = isset($data['kecheng_json']) ? $data['kecheng_json'] : '';
             $rs['studentid'] = $data['studentid'];
             return $rs;
         } else {
@@ -282,7 +265,7 @@ class JwcController extends Controller
         }
         if ($rs == 404) {
             $content = '服务器不太稳定，请隔几十秒再试\ue403';
-        } elseif ($rs!=403) {
+        } elseif ($rs != 403) {
             $kecheng = json_decode($rs['kecheng_json'], true);
             switch ($keyword) {
                 case '课表':
@@ -326,7 +309,8 @@ class JwcController extends Controller
                     $content = $this->returnKebiao($kecheng[7]);
                     break;
                 case '成绩':
-                    $cookie = R('Info/getJwcCookie', array($openid));
+                    $cookie = R('Info/getJwcCookie', array($openid
+                    ));
                     if ($cookie == 404) {
                         $content = '服务器不太稳定，请隔几十秒再试\ue403';
                     } elseif ($cookie) {
@@ -345,40 +329,42 @@ class JwcController extends Controller
                             $content = '入口被关闭了，等下次开放吧/撇嘴开放时间教务处决定的，我们也不知道';
                         }
                     } else {
-                        $content = '你还未绑定，<a href="' . $this->selfurl . U('View/Login/index','openid='.$openid).'">点击此处</a>绑定后使用';
+                        $content = '你还未绑定，<a href="' . $this->selfurl . U('View/Login/index', 'openid=' . $openid) . '">点击此处</a>绑定后使用';
                     }
                     break;
                 case '选修课':
-                    $cookie = R('Info/getJwcCookie', array($openid));
+                    $cookie = R('Info/getJwcCookie', array($openid
+                    ));
                     if ($cookie == 404) {
                         $content = '服务器不太稳定，请隔几十秒再试\ue403';
                     } elseif ($cookie) {
                         $xxdata = $this->readXuanxiu($cookie, $rs['studentid']);
                         $content = $this->dealXuanxiu($xxdata);
                     } else {
-                        $content = '你还未绑定，<a href="' . $this->selfurl . U('View/Login/index','openid='.$openid) . '">点击此处</a>绑定后使用';
+                        $content = '你还未绑定，<a href="' . $this->selfurl . U('View/Login/index', 'openid=' . $openid) . '">点击此处</a>绑定后使用';
                     }
                     break;
                 case '报名':
-                    $cookie = R('Info/getJwcCookie', array($openid));
+                    $cookie = R('Info/getJwcCookie', array($openid
+                    ));
                     if ($cookie == 404) {
                         $content = '服务器不太稳定，请隔几十秒再试\ue403';
                     } elseif ($cookie) {
-                        $content = '<a href="' . $this->selfurl . U('View/Baoming/index','openid='.$openid) . '">点我开始报名</a>';
+                        $content = '<a href="' . $this->selfurl . U('View/Baoming/index', 'openid=' . $openid) . '">点我开始报名</a>';
                     } else {
-                        $content = '你还未绑定，<a href="' . $this->selfurl . U('View/Login/index','openid='.$openid).'">点击此处</a>绑定后使用';
+                        $content = '你还未绑定，<a href="' . $this->selfurl . U('View/Login/index', 'openid=' . $openid) . '">点击此处</a>绑定后使用';
                     }
                     break;
             }
             if ($cookie != 404 && $cookie) {
                 if ($keyword != '成绩' && $keyword != '选修课' && $keyword != '报名' && $keyword != '评教') {
-                    $content .= "\n" . '<a href="' . $this->selfurl . U('View/Kebiao/index','openid='.$openid). '">戳我查看全部课表</a>\ue40c';
+                    $content .= "\n" . '<a href="' . $this->selfurl . U('View/Kebiao/index', 'openid=' . $openid) . '">戳我查看全部课表</a>\ue40c';
                 } elseif ($keyword == '成绩') {
-                    $content .= "\n" . '<a href="' . $this->selfurl . U('View/Chengji/index','openid='.$openid) . '">戳我查询其他学期成绩</a>\ue40c';
+                    $content .= "\n" . '<a href="' . $this->selfurl . U('View/Chengji/index', 'openid=' . $openid) . '">戳我查询其他学期成绩</a>\ue40c';
                 }
             }
         } else {
-            $content = '你还未绑定，<a href="' . $this->selfurl . U('View/Login/index','openid='.$openid) . '">点击此处</a>绑定后使用';
+            $content = '你还未绑定，<a href="' . $this->selfurl . U('View/Login/index', 'openid=' . $openid) . '">点击此处</a>绑定后使用';
         }
         $Resdata = array();
         $Resdata['replytype'] = 0;
