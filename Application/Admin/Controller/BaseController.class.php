@@ -210,9 +210,11 @@ class BaseController extends PublicController
         if ($data['type'] > 0) {
             $access = new accesstoken();
             $menu = json_decode(file_get_contents('https://api.weixin.qq.com/cgi-bin/menu/get?access_token=' . $access->getAccessToken()), true);
-        }
+        }dump($menu);
         if (isset($menu['menu'])) {
             $menu = $menu['menu']['button'];
+        }else{
+            $menu=null;
         }
         $this->data = $data;
         $this->menu = $menu;
@@ -220,6 +222,52 @@ class BaseController extends PublicController
         $this->setmenuUrl = U('Base/setmenu');
         $this->indexUrl = U('Index/index');
         $this->display();
+    }
+    
+    public function setmenu(){
+        $act=I('post.act');
+        if($act=='del'){
+            $access = new accesstoken();
+            $url='https://api.weixin.qq.com/cgi-bin/menu/delete?access_token='.$access->getAccessToken();
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_TIMEOUT, 500);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($curl, CURLOPT_URL, $url);
+        
+            $res = curl_exec($curl);
+            curl_close($curl);
+            $msg=json_decode($res,true);
+            if($msg['errcode']==0){
+                echo '菜单删除成功！';
+            }else{
+                echo $msg['errmsg'];
+            }
+        }elseif(isset($_POST['menu'])){
+            $access = new accesstoken();
+            $url='https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$access->getAccessToken();
+            $menu='{"button":'.I('post.menu','','').'}';
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_TIMEOUT, 500);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $menu);
+        
+            $res = curl_exec($curl);
+            curl_close($curl);
+            $msg=json_decode($res,true);
+            if($msg['errcode']==0){
+                echo '菜单发布成功！由于微信客户端缓存，需要24小时微信客户端才会展现出来';
+            }else{
+                echo $msg['errmsg'];
+            }
+        }else{
+            echo '数据错误！请刷新后重试';
+        }
     }
 
     public function selectTuwen()

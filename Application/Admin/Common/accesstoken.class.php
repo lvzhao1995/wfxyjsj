@@ -17,7 +17,7 @@ class accesstoken
     public function getAccessToken()
     {
         S(array('prefix'=>'wx'));
-        if (($access_token=S('access_token'))!==false) {
+        if (($access_token=S('access_token'))===false) {
             $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=$this->appId&secret=$this->appSecret";
             $res = json_decode($this->httpGet($url));
             $access_token = $res->access_token;

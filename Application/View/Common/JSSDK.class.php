@@ -49,7 +49,7 @@ class JSSDK
     private function getJsApiTicket()
     {
         S(array('prefix'=>'wx'));
-        if (($ticket=S('jsapi_ticket'))!==false) {
+        if (($ticket=S('jsapi_ticket'))===false) {
             $accessToken = $this->getAccessToken();
             $url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token=$accessToken";
             $res = json_decode($this->httpGet($url));
@@ -65,7 +65,7 @@ class JSSDK
     private function getAccessToken()
     {
         S(array('prefix'=>'wx'));
-        if (($access_token=S('access_token'))!==false) {
+        if (($access_token=S('access_token'))===false) {
             $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=$this->appId&secret=$this->appSecret";
             $res = json_decode($this->httpGet($url));
             $access_token = $res->access_token;
