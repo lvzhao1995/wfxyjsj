@@ -210,7 +210,7 @@ class BaseController extends PublicController
         if ($data['type'] > 0) {
             $access = new accesstoken();
             $menu = json_decode(file_get_contents('https://api.weixin.qq.com/cgi-bin/menu/get?access_token=' . $access->getAccessToken()), true);
-        }dump($menu);
+        }
         if (isset($menu['menu'])) {
             $menu = $menu['menu']['button'];
         }else{
