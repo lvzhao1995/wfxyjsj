@@ -2,7 +2,11 @@
 namespace Home\Controller;
 
 use Think\Controller;
-
+/**
+ * 图书馆相关操作
+ * @author lvzhao1995
+ *
+ */
 class LibController extends Controller
 {
 
@@ -11,13 +15,21 @@ class LibController extends Controller
     private $captcha = '';
 
     private $selfurl;
-
+/**
+ * 初始化
+ */
     public function _initialize()
     {
         $this->url = C('LIB_URL');
         $this->selfurl = 'http://' . $_SERVER['HTTP_HOST'];
     }
-
+/**
+ * 搜索图书馆藏书
+ * @param string $strText 搜索关键词
+ * @param string $SearchType 搜索类型
+ * @param string $respond 是否返回图文消息
+ * @return array
+ */
     function search($strText, $SearchType = 'title', $respond = TRUE)
     {
         $strText = urlencode($strText);
@@ -63,7 +75,12 @@ class LibController extends Controller
         }
         return $bookdetail;
     }
-
+/**
+ * 处理搜索结果，形成图文消息格式
+ * @param string $key
+ * @param string $openid
+ * @return array
+ */
     private function news($key, $openid)
     {
         $bookResult = $this->search($key);
@@ -88,7 +105,11 @@ class LibController extends Controller
         
         return $bookInfo;
     }
-
+/**
+ * 编码转换
+ * @param string $name
+ * @return string
+ */
     private function unicode_decode($name)
     {
         $name = str_replace(array('&#x',';'
@@ -114,7 +135,11 @@ class LibController extends Controller
         }
         return $name;
     }
-
+/**
+ * 获取借阅数据
+ * @param string $cookie
+ * @return array
+ */
     function getLibData($cookie)
     {
         $url = $this->url . 'reader/book_lst.php';
@@ -122,7 +147,11 @@ class LibController extends Controller
         $data['cookie'] = $cookie;
         return $data;
     }
-
+/**
+ * 处理借阅数据
+ * @param array $data 借阅信息原始数据
+ * @return array
+ */
     function trimData($data)
     {
         $tushu = array();
@@ -158,7 +187,14 @@ class LibController extends Controller
         }
         return $book;
     }
-
+/**
+ * 续借单本图书,由图书数据eval调用
+ * @param unknown $barcode
+ * @param unknown $check
+ * @param unknown $num
+ * @param unknown $cookie
+ * @return mixed|NULL
+ */
     private function getInLib($barcode, $check, $num, $cookie)
     {
         if (empty($this->captcha)) {
@@ -168,7 +204,10 @@ class LibController extends Controller
         $data = $this->visit_url($xujie_url, $cookie, 0);
         return $data[0];
     }
-
+/**
+ * 识别续借验证码
+ * @param string $cookie
+ */
     private function getCaptcha($cookie)
     {
         $yzm_url = $this->url . 'reader/captcha.php';
@@ -183,7 +222,12 @@ class LibController extends Controller
         $this->captcha = $yzm->run();
         unlink($tempfname);
     }
-
+/**
+ * 应用入口文件
+ * @param string $key
+ * @param string $openid
+ * @return array
+ */
     function setKey($key, $openid)
     {
         $Result = array();
@@ -237,7 +281,14 @@ class LibController extends Controller
             return $Result;
         }
     }
-
+/**
+ * 访问url
+ * @param string $url
+ * @param string $cookie
+ * @param number $head
+ * @param number $timeout
+ * @return array
+ */
     private function visit_url($url, $cookie = null, $head = 1, $timeout = 3)
     {
         $ch = curl_init();
@@ -257,7 +308,11 @@ class LibController extends Controller
         curl_close($ch);
         return $data;
     }
-
+/**
+ * 一键续借
+ * @param string $book 借阅信息
+ * @return string
+ */
     function xujie($book)
     {
         $return_str = '';
@@ -286,7 +341,11 @@ class LibController extends Controller
         }
         return $return_str;
     }
-
+/**
+ * 获取图书信息
+ * @param string $marc_no 
+ * @return mixed
+ */
     function getBookInfo($marc_no)
     {
         $url = $this->url . '/opac/item.php?marc_no=' . $marc_no;
@@ -314,7 +373,11 @@ class LibController extends Controller
             return 404;
         }
     }
-
+/**
+ * 获取用户违章信息
+ * @param unknown $cookie
+ * @return array
+ */
     function weizhang($cookie)
     {
         $url = $this->url . 'reader/fine_pec.php';

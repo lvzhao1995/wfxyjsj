@@ -2,7 +2,11 @@
 namespace Home\Controller;
 
 use Think\Controller;
-
+/**
+ * 教务处相关操作
+ * @author lvzhao1995
+ *
+ */
 class JwcController extends Controller
 {
 
@@ -11,7 +15,9 @@ class JwcController extends Controller
     public $starttime = 0;
 
     private $selfurl;
-
+/**
+ * 获取初始化信息
+ */
     public function _initialize()
     {
         $this->selfurl = 'http://' . $_SERVER['HTTP_HOST'];
@@ -24,7 +30,12 @@ class JwcController extends Controller
         }
         $this->url = C('JWC_URL');
     }
-
+/**
+ * 从教务处获取课程信息
+ * @param string $cookie 教务处cookie
+ * @param string $number 学号
+ * @return mixed
+ */
     private function readKecheng($cookie, $number)
     {
         $url1 = $this->url . 'xskbcx.aspx?xh=' . $number;
@@ -37,7 +48,12 @@ class JwcController extends Controller
         $kecheng[1] = preg_replace('/<font.*?font>/', '', $kecheng[1]);
         return $kecheng;
     }
-
+/**
+ * 获取选修信息
+ * @param string $cookie 教务处cookie
+ * @param string $number 学号
+ * @return array
+ */
     function readXuanxiu($cookie, $number)
     {
         $url1 = $this->url . 'xf_xsqxxxk.aspx?xh=' . $number;
@@ -62,7 +78,11 @@ class JwcController extends Controller
         }
         return $redata;
     }
-
+/**
+ * 处理选修信息
+ * @param array $kecheng 选修信息数组
+ * @return string
+ */
     private function dealXuanxiu($kecheng)
     {
         $redata = '';
@@ -78,7 +98,12 @@ class JwcController extends Controller
         }
         return $redata;
     }
-
+/**
+ * 获取成绩查询页隐藏表单内容
+ * @param string $cookie 教务处cookie
+ * @param string $number 学号
+ * @return mixed
+ */
     private function chengjiHidden($cookie, $number)
     {
         $url1 = $this->url . 'xscj.aspx?xh=' . $number;
@@ -87,8 +112,16 @@ class JwcController extends Controller
         $matches = $this->getHidden($data[0]);
         return $matches[1][0];
     }
-
-    function getChengji($cookie, $number, $xn = NULL, $xq = NULL, $wangye = NULL)
+/**
+ * 获取成绩
+ * @param string $cookie 教务处cookie
+ * @param string $number 学号
+ * @param string $xn 学年
+ * @param int $xq 学期
+ * @param boolean $wangye 是否是网页查询
+ * @return mixed
+ */
+    function getChengji($cookie, $number, $xn = NULL, $xq = NULL, $wangye = false)
     {
         if (empty($xn)) {
             $yue = date('m');
@@ -138,7 +171,11 @@ class JwcController extends Controller
         }
         return $resData;
     }
-
+/**
+ * 获取页面隐藏表单内容
+ * @param string $content 网页内容
+ * @return string
+ */
     private function getHidden($content)
     {
         $hidden_match = array();
@@ -169,7 +206,11 @@ class JwcController extends Controller
             return $hidden_match;
         }
     }
-
+/**
+ * 处理课程信息
+ * @param string $data 网页内容
+ * @return string
+ */
     private function analyse($data)
     {
         $data = preg_replace('/<font.*?<\/font><br><br>/ims', '', $data);
@@ -212,7 +253,11 @@ class JwcController extends Controller
         }
         return json_encode($kb_course);
     }
-
+/**
+ * 判断用户是否绑定
+ * @param string $openid 用户openid
+ * @param boolean $kebiao 当前是否查课表
+ */
     function isBind($openid, $kebiao = false)
     {
         $db = M('info');
@@ -255,7 +300,12 @@ class JwcController extends Controller
             return 403;
         }
     }
-
+/**
+ * 应用入口方法，判断用户请求
+ * @param string $keyword 用户发送的消息内容
+ * @param string $openid 用户openid
+ * @return array
+ */
     function setKey($keyword, $openid)
     {
         if ($keyword != '成绩' && $keyword != '选修课' && $keyword != '报名' && $keyword != '评教') {
@@ -371,7 +421,11 @@ class JwcController extends Controller
         $Resdata['content'] = $content;
         return $Resdata;
     }
-
+/**
+ * 对某一天课表进行排版
+ * @param array $kecheng 当天课程数据
+ * @return string
+ */
     private function returnKebiao($kecheng)
     {
         $week = (time() - $this->starttime) / 604800;
@@ -415,7 +469,15 @@ class JwcController extends Controller
         }
         return $contentStr;
     }
-
+/**
+ * 访问网页获取内容
+ * @param string $url URL
+ * @param string $cookie 需要带入的cookie
+ * @param string $referer referer参数
+ * @param number $head 返回内容是否包含head
+ * @param array $post 需要post提交的数据
+ * @return array
+ */
     private function visit_url($url, $cookie = null, $referer = null, $head = 0, $post = null)
     {
         $ch = curl_init();
@@ -440,7 +502,12 @@ class JwcController extends Controller
         curl_close($ch);
         return $data;
     }
-
+/**
+ * 获取报名信息
+ * @param string $number 学号
+ * @param string $cookie 教务处cookie
+ * @return array
+ */
     function getBaomingMsg($number, $cookie)
     {
         $url = $this->url . 'bmxmb.aspx?xh=' . $number;

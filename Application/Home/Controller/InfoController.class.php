@@ -3,20 +3,30 @@ namespace Home\Controller;
 
 use Think\Controller;
 use Home\Common\do_encrypt;
-
+/**
+ * 与信息门户相关的操作
+ * @author lvzhao1995
+ *
+ */
 class InfoController extends Controller
 {
 
     private $url;
 
     private $selfurl;
-
+/**
+ * 获取信息门户URL
+ */
     public function _initialize()
     {
         $this->url = C('INFO_URL');
         $this->selfurl = 'http://' . $_SERVER['HTTP_HOST'];
     }
-
+/**
+ * 入口方法，处理用户消息
+ * @param string $keyword 用户发送的消息
+ * @param string $openid 用户openid
+ */
     function setKey($keyword, $openid)
     {
         switch ($keyword) {
@@ -39,7 +49,11 @@ class InfoController extends Controller
         $resdata['content'] = $content;
         return $resdata;
     }
-
+/**
+ * 获取用户读取信息门户信息使用的cookie
+ * @param string $cookie 登录时的cookie
+ * @return string
+ */
     public function getCookie($cookie)
     {
         $matches = array();
@@ -48,7 +62,13 @@ class InfoController extends Controller
         $cookie = substr($matches[1][2], 1);
         return $cookie;
     }
-
+/**
+ * 用户绑定信息门户
+ * @param string $openid 用户openid
+ * @param string $number 学号
+ * @param string $password 密码
+ * @return int|string 错误码或登录后的cookie
+ */
     function bind($openid, $number, $password)
     {
         $flag = $this->login($number, $password);
@@ -76,7 +96,12 @@ class InfoController extends Controller
             return 400;
         }
     }
-
+/**
+ * 登录信息门户
+ * @param string $number 学号
+ * @param string $password 密码
+ * @return number|string 错误码或cookie
+ */
     private function login($number, $password)
     {
         $url = $this->url . 'userPasswordValidate.portal';
@@ -98,7 +123,11 @@ class InfoController extends Controller
             return $cookie;
         }
     }
-
+/**
+ * 获取用户的信息门户通知信息
+ * @param string $cookie 登录的cookie
+ * @return mixed
+ */
     private function information($cookie)
     {
         $url = $this->url . 'pnull.portal?.pmn=view&.ia=false&action=informationCenterAjax&.f=f1104&.pen=pe162';
@@ -108,7 +137,11 @@ class InfoController extends Controller
         $resData = json_decode($data[0], true);
         return $resData;
     }
-
+/**
+ * 获取校园卡余额
+ * @param string $openid 用户openid
+ * @return string
+ */
     private function Yue($openid)
     {
         $cookie = $this->isBind($openid);
@@ -121,7 +154,11 @@ class InfoController extends Controller
         $res = strip_tags($array[1]['description']);
         return $res;
     }
-
+/**
+ * 判断用户是否绑定
+ * @param string $openid 用户openid
+ * @return int|string 错误码或cookie
+ */
     function isBind($openid)
     {
         $db = M('Info');
@@ -145,7 +182,11 @@ class InfoController extends Controller
             return 403;
         }
     }
-
+/**
+ * 解除绑定
+ * @param string $openid 用户openid
+ * @return boolean
+ */
     function unBind($openid)
     {
         $db = M('info');
@@ -159,7 +200,11 @@ class InfoController extends Controller
             return false;
         }
     }
-
+/**
+ * 通过信息门户获取教务处cookie
+ * @param string $openid 用户openid
+ * @return mixed
+ */
     public function getJwcCookie($openid)
     {
         $cookie = $this->isBind($openid);
@@ -170,7 +215,11 @@ class InfoController extends Controller
         }
         return $cookie;
     }
-
+/**
+ * 通过信息门户获取图书馆cookie
+ * @param string $openid 用户openid
+ * @return mixed
+ */
     public function getLibCookie($openid)
     {
         $cookie = $this->isBind($openid);
@@ -181,7 +230,14 @@ class InfoController extends Controller
         }
         return $cookie;
     }
-
+/**
+ * 访问URL并获取内容
+ * @param string $url 需要访问的url
+ * @param string $cookie 需要带上的cookie
+ * @param string $referer referer参数
+ * @param number $head 是否获取head信息
+ * @param array $post 需要post提交的数据
+ */
     private function visitUrl($url, $cookie = null, $referer = null, $head = 1, $post = null)
     {
         $ch = curl_init();
